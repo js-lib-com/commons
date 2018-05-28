@@ -100,12 +100,14 @@ public class FilesIteratorUnitTest
   @Test
   public void testEmptyDirectory()
   {
+    
     for(String baseDir : new String[]
     {
         "fixture/files-iterator/dir0", "fixture/files-iterator/file3"
     }) {
       Collection<File> files = new ArrayList<File>();
       File projectDir = new File(baseDir);
+      projectDir.mkdir();
       FilesIterator<File> it = FilesIterator.getAbsoluteIterator(projectDir);
       while(it.hasNext()) {
         files.add(it.next());
