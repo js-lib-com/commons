@@ -100,7 +100,6 @@ public class FilesIteratorUnitTest
   @Test
   public void testEmptyDirectory()
   {
-    
     for(String baseDir : new String[]
     {
         "fixture/files-iterator/dir0", "fixture/files-iterator/file3"
