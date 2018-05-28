@@ -274,6 +274,7 @@ public class FilesUnitTest
   public void testRemoveFilesHierarchy() throws FileNotFoundException, IOException
   {
     File baseDir = new File("fixture/files-hierarchy");
+    baseDir.mkdir(); // ensure directory is create
     assertEquals(0, baseDir.list().length);
 
     ByteArrayInputStream inputStream = new ByteArrayInputStream("1234567890".getBytes("UTF-8"));
