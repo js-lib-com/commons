@@ -20,6 +20,19 @@
  * Object object = converter.asObject(string, Object.class);
  *  </pre>
  *  
+ * <p>
+ * To facilitate integration {@link js.converter.ConverterRegistry} is singleton global per JVM. This is
+ * necessary also to ensure consistency of (de)serialization process. Anyway, it is developer responsibility
+ * to ensure consistency across different Java virtual machines.
+ * <p>
+ * Since registry is global and since it stores mappings of value types converters it acts as a global state.
+ * This is a serious drawback that could lead to hard to catch bugs dues to converters overriding. For example,
+ * a class may need a particular wire format for a value type, different from rest of application, and decide
+ * to register a converter for that. This particular converter will become global and used on entire JVM.
+ * <p>
+ * Developer is encouraged to register all converters in a single place in order to have a clear picture and
+ * avoid class specific converters. 
+ *  
  * <h3>User Defined Converters</h3>
  * Although there are stock converters ready to use, this package is designed to be extensible. In order 
  * to create user defined converter one should implement {@link js.converter.Converter} and register it 
@@ -70,7 +83,12 @@
  * ...
  * ConverterRegistry.getInstance().registerConverter(MessageID.class, MessageIDConverter.class);
  * </pre>
- * 
+ * <p>
+ * <b>Warning:</b> Since converter registry is singleton all registered user defined converters are global
+ * per virtual machine and have impact on all serialization processes that uses converters. Overriding a 
+ * built-in converter may have unexpected results, especially in a complex context with many connected modules
+ * running in the same virtual machine.
+ *  
  * <h3>Self-converting</h3>
  * Self-converting value types are objects that contains both data model and converting logic. To simplify
  * user code, there is no need to declare binding for self-converting value types; they are created on the

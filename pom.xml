@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>js-lib</groupId>
 	<artifactId>js-commons</artifactId>
-	<version>1.0.1</version>
+	<version>1.1.0</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -52,6 +52,9 @@
 						<goals>
 							<goal>jar</goal>
 						</goals>
+						<configuration>
+							<show>private</show>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

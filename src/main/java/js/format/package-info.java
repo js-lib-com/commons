@@ -1,18 +1,17 @@
 /**
- * User interface formatters. Format package convert object values to string representation usable
- * to user interfaces. Since this package is used only on server it deals with objects formatting, 
- * strings parsing being exclusively implemented by client code. Formatted string should be proper for 
- * display on user interfaces and may be subject to locale and time zone adjustments. Note that not 
- * all format classes should be both locale and time zone sensitive.
+ * User interface formatters and parsers. Format package convert object values to/from string representation
+ * usable to user interfaces. Formatted string should be proper for display on user interfaces and may be 
+ * subject to locale and time zone adjustments. Note that not all format classes should be both locale 
+ * and time zone sensitive.
  * <p>
- * A formatter deals with object value. An object value is an instance of a class that wrap a single value susceptible to be
- * represented as a single string - a sort of data atom, e.g. java.io.File or java.net.URL. 
+ * A formatter deals with object value. An object value is an instance of a class that wrap a single value 
+ * susceptible to be represented as a single string - a sort of data atom, e.g. java.io.File or java.net.URL. 
  * 
- * <h3>Stock Formatters</h3>
+ * <h3>Stock Format Classes</h3>
  * Format package contains ready to use format classes for date/time, currency, percent, numbers and 
- * file size. Here is a list with sample output to help decide which best fit your needs.
+ * file size. Here is a list with sample output/input to help decide which best fit your needs.
  * <table>
- * <caption>Formatters Sample</caption>
+ * <caption>Value Sample</caption>
  * <tr><th>Class</th><th>English Sample</th><th>Romanian Sample</th></tr>
  * <tr><td>FullDateTime</td><td>Sunday, March 15, 1964 11:40:00 AM UTC</td><td>15 martie 1964 11:40:00 UTC</td></tr>
  * <tr><td>FullDate</td><td>Sunday, March 15, 1964</td><td>15 martie 1964</td></tr>
@@ -36,11 +35,11 @@
  * </table>
  * 
  * <h3>Usage</h3>
- * In order to invoke {@link js.format.Format#format(Object)} one needs a formatter instance. If a formatter
- * is locale and or time zone sensitive its constructor takes care to initialize default values. Formatter
- * implementation may provide setter for locale settings and time zone used to overwrite default values.
- * If present, these setters should be called before executing formatting. Here is a sample usage on a 
- * date time formatter.
+ * In order to invoke {@link js.format.Format#format(Object)} or {@link js.format.Format#parse(String)}
+ * one needs a formatter instance. If a formatter is locale and or time zone sensitive its constructor 
+ * takes care to initialize default values. Formatter implementation may provide setters for locale settings 
+ * and time zone used to overwrite default values. If present, these setters should be called before 
+ * executing formatting or parsing. Here is a sample usage on a date time formatter.
  * <pre>
  * LongDate formatter = new LongDate();
  * formatter.setLocale(new Locale("ro"));
@@ -54,8 +53,8 @@
  * {@link js.format.Format} interface.
  * <p>
  * For date time formatters, format package provides an abstract base class. This abstract base class 
- * implements almost entire date time formatting logic. User defined implementation should only implement 
- * the factory method {@link js.format.DateTimeFormat#createDateFormat(Locale)}.
+ * implements almost entire date time formatting and parsing logic. User defined implementation should 
+ * only implement the factory method {@link js.format.DateTimeFormat#createDateFormat(Locale)}.
  * <p>
  * For your convenience here is an example of a date time formatter from this package.
  * 
