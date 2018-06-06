@@ -78,7 +78,7 @@ public class ClassesUnitTest
     // not documented feature: accept but ignore leading path separator
     assertNotNull(Classes.getResourceAsReader("/js/util/test/ClassesUnitTest.class"));
 
-    Reader reader = Classes.getResourceAsReader("js/util/test/resource.txt");
+    Reader reader = Classes.getResourceAsReader("/js/util/test/resource.txt");
     assertResource(new ReaderInputStream(reader));
   }
 

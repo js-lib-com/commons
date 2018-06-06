@@ -410,8 +410,8 @@ public class TypesUnitTest
     {
         1, 2
     }).iterator();
-    assertEquals(1, (int)it.next());
-    assertEquals(2, (int)it.next());
+    assertEquals(1, (int)(Integer)it.next());
+    assertEquals(2, (int)(Integer)it.next());
     try {
       it.next();
       fail("Overbounds iteration should rise exception.");

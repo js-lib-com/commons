@@ -160,7 +160,7 @@ public class I18nUtilsUnitTest
 
     File repositoryPath = new File("fixture/i18n/app/");
     FileFilter fileFilter = new WildcardFilter("*.htm");
-    Iterable<I18nFile> repository = Classes.newInstance(repositoryClass, repositoryPath, fileFilter);
+    Iterable<I18nFile> repository = createRepository(repositoryClass, repositoryPath, fileFilter);
     assertNotNull(repository);
 
     List<String> files = new ArrayList<String>();
@@ -176,7 +176,7 @@ public class I18nUtilsUnitTest
 
     repositoryPath = new File("fixture/i18n/app/fo").getAbsoluteFile();
     fileFilter = new WildcardFilter("*.fo");
-    repository = Classes.newInstance(repositoryClass, repositoryPath, fileFilter);
+    repository = createRepository(repositoryClass, repositoryPath, fileFilter);
     assertNotNull(repository);
 
     files = new ArrayList<String>();
@@ -198,7 +198,7 @@ public class I18nUtilsUnitTest
     File baseDir = new File("fixture/i18n/app-language/");
     String subpath = null;
     FileFilter fileFilter = new WildcardFilter("*.htm");
-    Iterable<I18nFile> repository = Classes.newInstance(repositoryClass, baseDir, subpath, fileFilter);
+    Iterable<I18nFile> repository = createRepository(repositoryClass, baseDir, subpath, fileFilter);
     assertNotNull(repository);
 
     Set<Locale> locales = new HashSet<Locale>();
@@ -223,7 +223,7 @@ public class I18nUtilsUnitTest
     baseDir = new File("fixture/i18n/app-language/");
     fileFilter = new WildcardFilter("*.fo");
     subpath = "fo";
-    repository = Classes.newInstance(repositoryClass, baseDir, subpath, fileFilter);
+    repository = createRepository(repositoryClass, baseDir, subpath, fileFilter);
     assertNotNull(repository);
 
     locales.clear();
@@ -252,7 +252,7 @@ public class I18nUtilsUnitTest
     File baseDir = new File("fixture/i18n/app-locale/");
     String subpath = null;
     FileFilter fileFilter = new WildcardFilter("*.htm");
-    Iterable<I18nFile> repository = Classes.newInstance(repositoryClass, baseDir, subpath, fileFilter);
+    Iterable<I18nFile> repository = createRepository(repositoryClass, baseDir, subpath, fileFilter);
     assertNotNull(repository);
 
     Set<Locale> locales = new HashSet<Locale>();
@@ -277,7 +277,7 @@ public class I18nUtilsUnitTest
     baseDir = new File("fixture/i18n/app-locale/");
     fileFilter = new WildcardFilter("*.fo");
     subpath = "fo";
-    repository = Classes.newInstance(repositoryClass, baseDir, subpath, fileFilter);
+    repository = createRepository(repositoryClass, baseDir, subpath, fileFilter);
     assertNotNull(repository);
 
     locales.clear();
@@ -306,7 +306,7 @@ public class I18nUtilsUnitTest
     File baseDir = new File("fixture/i18n/app-mixed/");
     String subpath = null;
     FileFilter fileFilter = new WildcardFilter("*.htm");
-    Iterable<I18nFile> repository = Classes.newInstance(repositoryClass, baseDir, subpath, fileFilter);
+    Iterable<I18nFile> repository = createRepository(repositoryClass, baseDir, subpath, fileFilter);
     assertNotNull(repository);
 
     Set<Locale> locales = new HashSet<Locale>();
@@ -331,7 +331,7 @@ public class I18nUtilsUnitTest
     baseDir = new File("fixture/i18n/app-mixed/");
     fileFilter = new WildcardFilter("*.fo");
     subpath = "fo";
-    repository = Classes.newInstance(repositoryClass, baseDir, subpath, fileFilter);
+    repository = createRepository(repositoryClass, baseDir, subpath, fileFilter);
     assertNotNull(repository);
 
     locales.clear();
@@ -402,6 +402,19 @@ public class I18nUtilsUnitTest
     file = pool.get("about", new Locale("ro"));
     assertNotNull(file);
     content = Strings.load(file);
-   // assertTrue(content.contains("Bună"));
+    assertTrue(content.contains("Bună"));
+  }
+
+  // ----------------------------------------------------------------------------------------------
+  // UTILITY METHODS
+
+  private static Iterable<I18nFile> createRepository(Class repositoryClass, File baseDir, FileFilter fileFilter)
+  {
+    return (Iterable<I18nFile>)Classes.newInstance(repositoryClass, baseDir, fileFilter);
+  }
+
+  private static Iterable<I18nFile> createRepository(Class repositoryClass, File baseDir, String subpath, FileFilter fileFilter)
+  {
+    return (Iterable<I18nFile>)Classes.newInstance(repositoryClass, baseDir, subpath, fileFilter);
   }
 }
