@@ -206,6 +206,13 @@ public class StringsUnitTest
     assertEquals("One two three", Strings.trim("<One two three>", '<'));
     assertEquals("One two three", Strings.trim("\r\nOne two three\r\n"));
     assertEquals("One two three", Strings.trim(" \r\n\tOne two three"));
+
+    assertEquals("R", Strings.trim("R", ','));
+    assertEquals("", Strings.trim(",", ','));
+    assertEquals("", Strings.trim(",,", ','));
+    assertEquals("", Strings.trim(",,,,,", ','));
+    assertEquals("", Strings.trim("", ','));
+
     assertNull(Strings.trim(null, '('));
     assertNull(Strings.trim(null));
   }

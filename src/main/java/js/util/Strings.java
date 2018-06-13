@@ -1248,6 +1248,9 @@ public class Strings
    * Trim given string. Remove given garbage characters from around the string. This method is smart enough to pair open
    * parenthesis, that is, if given garbage is an open parenthesis eliminates it from beginning of string and closing
    * parenthesis from the end. This is true for all rounded, square, curly and angular parenthesis.
+   * <p>
+   * This method returns null if given source string is null and returns empty string if source string is empty or
+   * contains only garbage.
    * 
    * @param string source string,
    * @param garbage no longer needed characters at around the string.
@@ -1280,6 +1283,9 @@ public class Strings
     int beginIndex = 0;
     for(; beginIndex < length; ++beginIndex) {
       if(string.charAt(beginIndex) != prefix) break;
+    }
+    if(beginIndex == length) {
+      return "";
     }
     int endIndex = length - 1;
     for(; endIndex >= 0; --endIndex) {
