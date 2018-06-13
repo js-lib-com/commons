@@ -1,0 +1,5 @@
+2018-06-13  DEV  <DEV@DEV>
+
+	* pom.xml: 
+	* src\main\java\js\util\Strings.java (trim): fix String index out of range when trim source string containing only garbage characters
+	* src\test\java\js\util\test\StringsUnitTest.java (trim): update unit test for bug fix
