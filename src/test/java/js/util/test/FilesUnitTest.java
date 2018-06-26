@@ -18,10 +18,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.junit.Test;
+
 import js.util.Files;
 import js.util.Strings;
-
-import org.junit.Test;
 
 public class FilesUnitTest
 {
@@ -40,24 +40,26 @@ public class FilesUnitTest
   @Test
   public void testPathComponenets()
   {
-    File file = new File("c://a/b/c/");
+    if(System.getProperty("os.name").toLowerCase().indexOf("win") >= 0) {
+      File file = new File("c://a/b/c/");
+      List<String> pathComponenets = Files.getPathComponents(file);
+      assertEquals(4, pathComponenets.size());
+      assertEquals("", pathComponenets.get(0));
+      assertEquals("a", pathComponenets.get(1));
+      assertEquals("b", pathComponenets.get(2));
+      assertEquals("c", pathComponenets.get(3));
+
+      file = new File("d://a/b/c");
+      pathComponenets = Files.getPathComponents(file);
+      assertEquals(4, pathComponenets.size());
+      assertEquals("", pathComponenets.get(0));
+      assertEquals("a", pathComponenets.get(1));
+      assertEquals("b", pathComponenets.get(2));
+      assertEquals("c", pathComponenets.get(3));
+    }
+
+    File file = new File("/a/b/c/");
     List<String> pathComponenets = Files.getPathComponents(file);
-    assertEquals(4, pathComponenets.size());
-    assertEquals("", pathComponenets.get(0));
-    assertEquals("a", pathComponenets.get(1));
-    assertEquals("b", pathComponenets.get(2));
-    assertEquals("c", pathComponenets.get(3));
-
-    file = new File("d://a/b/c");
-    pathComponenets = Files.getPathComponents(file);
-    assertEquals(4, pathComponenets.size());
-    assertEquals("", pathComponenets.get(0));
-    assertEquals("a", pathComponenets.get(1));
-    assertEquals("b", pathComponenets.get(2));
-    assertEquals("c", pathComponenets.get(3));
-
-    file = new File("/a/b/c/");
-    pathComponenets = Files.getPathComponents(file);
     assertEquals(4, pathComponenets.size());
     assertEquals("", pathComponenets.get(0));
     assertEquals("a", pathComponenets.get(1));
@@ -100,16 +102,16 @@ public class FilesUnitTest
   @Test
   public void testRelativePathCurrentBaseDirectory()
   {
-    File baseDir = new File("D:\\docs\\workspaces\\phoenix\\js-lib\\tools\\wood\\.\\fixture\\complex-page\\context\\.");
-    File file = new File("D:\\docs\\workspaces\\phoenix\\js-lib\\tools\\wood\\.\\fixture\\complex-page\\context\\images\\header-bg.jpg");
+    File baseDir = new File("fixture\\complex-page\\context\\.").getAbsoluteFile();
+    File file = new File("fixture\\complex-page\\context\\images\\header-bg.jpg").getAbsoluteFile();
     assertEquals("images/header-bg.jpg", Files.getRelativePath(baseDir, file, true));
   }
 
   @Test
   public void testRelativePathParentBaseDirectory()
   {
-    File baseDir = new File("D:\\docs\\workspaces\\phoenix\\js-lib\\tools\\wood\\.\\fixture\\complex-page\\context\\..");
-    File file = new File("D:\\docs\\workspaces\\phoenix\\js-lib\\tools\\wood\\.\\fixture\\complex-page\\context\\images\\header-bg.jpg");
+    File baseDir = new File("fixture\\complex-page\\context\\..").getAbsoluteFile();
+    File file = new File("fixture\\complex-page\\context\\images\\header-bg.jpg").getAbsoluteFile();
     assertEquals("context/images/header-bg.jpg", Files.getRelativePath(baseDir, file, true));
   }
 
