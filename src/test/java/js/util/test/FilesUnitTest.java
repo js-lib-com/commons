@@ -102,16 +102,16 @@ public class FilesUnitTest
   @Test
   public void testRelativePathCurrentBaseDirectory()
   {
-    File baseDir = new File("fixture\\complex-page\\context\\.").getAbsoluteFile();
-    File file = new File("fixture\\complex-page\\context\\images\\header-bg.jpg").getAbsoluteFile();
+    File baseDir = new File("fixture/complex-page/context/.").getAbsoluteFile();
+    File file = new File("fixture/complex-page/context/images/header-bg.jpg").getAbsoluteFile();
     assertEquals("images/header-bg.jpg", Files.getRelativePath(baseDir, file, true));
   }
 
   @Test
   public void testRelativePathParentBaseDirectory()
   {
-    File baseDir = new File("fixture\\complex-page\\context\\..").getAbsoluteFile();
-    File file = new File("fixture\\complex-page\\context\\images\\header-bg.jpg").getAbsoluteFile();
+    File baseDir = new File("fixture/complex-page/context/..").getAbsoluteFile();
+    File file = new File("fixture/complex-page/context/images/header-bg.jpg").getAbsoluteFile();
     assertEquals("context/images/header-bg.jpg", Files.getRelativePath(baseDir, file, true));
   }
 
