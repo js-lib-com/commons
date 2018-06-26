@@ -26,10 +26,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
+import org.junit.Test;
+
 import js.lang.BugError;
 import js.util.Types;
-
-import org.junit.Test;
 
 public class TypesUnitTest
 {
@@ -236,7 +236,7 @@ public class TypesUnitTest
 
     assertTrue(Types.asBoolean(new int[]
     {
-      1
+        1
     }));
     assertFalse(Types.asBoolean(new int[] {}));
 
@@ -410,8 +410,8 @@ public class TypesUnitTest
     {
         1, 2
     }).iterator();
-    assertEquals(1, (int)(Integer)it.next());
-    assertEquals(2, (int)(Integer)it.next());
+    assertEquals(new Integer(1), it.next());
+    assertEquals(new Integer(2), it.next());
     try {
       it.next();
       fail("Overbounds iteration should rise exception.");
@@ -423,8 +423,8 @@ public class TypesUnitTest
     list.add(2);
 
     it = Types.asIterable(list).iterator();
-    assertEquals(1, (int)it.next());
-    assertEquals(2, (int)it.next());
+    assertEquals(new Integer(1), it.next());
+    assertEquals(new Integer(2), it.next());
     assertFalse(it.hasNext());
 
     it = Types.asIterable(true).iterator();
