@@ -953,7 +953,8 @@ public class Classes
   }
 
   /**
-   * Retrieve URL of the named resource or null. This method does its best to load requested resource, as follow:
+   * Retrieve URL of the named resource or null if not found. A resource can be any file including Java source files or
+   * package directory. A special case is resource with empty name that denotes package root.
    * <p>
    * Resource is searched into next class loaders, in given order:
    * <ul>
@@ -964,13 +965,13 @@ public class Classes
    * 
    * @param name resource qualified name, using path separators instead of dots.
    * @return resource URL or null if not found.
-   * @throws IllegalArgumentException if <code>name</code> argument is null or empty.
+   * @throws IllegalArgumentException if <code>name</code> argument is null.
    */
   public static URL getResource(String name)
   {
-    Params.notNullOrEmpty(name, "Resource name");
+    Params.notNull(name, "Resource name");
     // not documented behavior: accept but ignore trailing path separator
-    if(name.charAt(0) == '/') {
+    if(!name.isEmpty() && name.charAt(0) == '/') {
       name = name.substring(1);
     }
 
@@ -1163,7 +1164,7 @@ public class Classes
    * protocol should be <code>file</code> and package is located into local classes and is processed as file. If
    * protocol is neither <code>file</code> nor <code>jar:file</code> throws unsupported operation.
    * 
-   * @param packageName qualified package name,
+   * @param packageName qualified package name, possible empty for package root,
    * @param fileNamesPattern file names pattern as accepted by {@link FilteredStrings#FilteredStrings(String)}.
    * @return collection of resources from package matching requested pattern, possible empty.
    * @throws NoSuchBeingException if package is not found by current application class loader.
@@ -1203,7 +1204,7 @@ public class Classes
    * protocols meaning it searches on both local classes and <code>.jar</code> files.
    * 
    * @param packageURL package URL as returned by {@link ClassLoader#getResources(String)},
-   * @param packagePath package path to actually lookup for resources,
+   * @param packagePath package path for resources lookup, possible empty for package root,
    * @param fileNamesPattern file name pattern.
    * @return collection of resources with requested file name pattern, possible empty.
    * @throws UnsupportedOperationException given package URL protocol is not <code>file</code> or <code>jar:file</code>.
@@ -1213,7 +1214,10 @@ public class Classes
     if("file".equals(packageURL.getProtocol())) {
       FilteredStrings resources = new FilteredStrings(fileNamesPattern);
       try {
-        resources.addAll(packagePath + "/", new File(packageURL.toURI()).list());
+        if(!packagePath.isEmpty()) {
+          packagePath += "/";
+        }
+        resources.addAll(packagePath, new File(packageURL.toURI()).list());
       }
       catch(URISyntaxException e) {
         throw new BugError("Invalid syntax on URL |%s| returned by getResource.", packageURL);

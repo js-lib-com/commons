@@ -50,35 +50,66 @@ public class ClassesUnitTest
   }
 
   @Test
-  public void testGetResource() throws IOException
+  public void getResource() throws IOException
   {
     assertNotNull(Classes.getResource("js/util/test/ClassesUnitTest.class"));
     // not documented feature: accept but ignore leading path separator
     assertNotNull(Classes.getResource("/js/util/test/ClassesUnitTest.class"));
 
     URL url = Classes.getResource("js/util/test/resource.txt");
+    assertNotNull(url);
+    assertResource(url.openStream());
+
+    url = Classes.getResource("resource.txt");
+    assertNotNull(url);
     assertResource(url.openStream());
   }
 
   @Test
-  public void testGetResourceAsStream() throws IOException
+  public void getPackageURL()
+  {
+    URL url = Classes.getResource("js/util/test/");
+    assertNotNull(url);
+    assertEquals("file", url.getProtocol());
+    assertTrue(url.getPath().endsWith("js/util/test/"));
+
+    // test package root denoted by empty resource name
+    url = Classes.getResource("");
+    assertNotNull(url);
+    assertEquals("file", url.getProtocol());
+    // this assert is working only if Maven target directory convention is not changed
+    assertTrue(url.getPath().endsWith("test-classes/"));
+  }
+
+  @Test
+  public void getResourceAsStream() throws IOException
   {
     assertNotNull(Classes.getResourceAsStream("js/util/test/ClassesUnitTest.class"));
     // not documented feature: accept but ignore leading path separator
     assertNotNull(Classes.getResourceAsStream("/js/util/test/ClassesUnitTest.class"));
 
     InputStream stream = Classes.getResourceAsStream("js/util/test/resource.txt");
+    assertNotNull(stream);
+    assertResource(stream);
+
+    stream = Classes.getResourceAsStream("resource.txt");
+    assertNotNull(stream);
     assertResource(stream);
   }
 
   @Test
-  public void testGetResourceAsReader() throws IOException
+  public void getResourceAsReader() throws IOException
   {
     assertNotNull(Classes.getResourceAsReader("js/util/test/ClassesUnitTest.class"));
     // not documented feature: accept but ignore leading path separator
     assertNotNull(Classes.getResourceAsReader("/js/util/test/ClassesUnitTest.class"));
 
     Reader reader = Classes.getResourceAsReader("/js/util/test/resource.txt");
+    assertNotNull(reader);
+    assertResource(new ReaderInputStream(reader));
+
+    reader = Classes.getResourceAsReader("resource.txt");
+    assertNotNull(reader);
     assertResource(new ReaderInputStream(reader));
   }
 
@@ -90,7 +121,7 @@ public class ClassesUnitTest
   }
 
   @Test
-  public void testGetResourceAsString() throws IOException
+  public void getResourceAsString() throws IOException
   {
     assertNotNull(Classes.getResourceAsString("js/util/test/ClassesUnitTest.class"));
     // not documented feature: accept but ignore leading path separator
@@ -98,12 +129,17 @@ public class ClassesUnitTest
 
     String expected = "resource.txt";
     String concrete = Classes.getResourceAsString("/js/util/test/resource.txt");
+    assertNotNull(concrete);
+    assertEquals(expected, concrete);
+
+    concrete = Classes.getResourceAsString("resource.txt");
+    assertNotNull(concrete);
     assertEquals(expected, concrete);
   }
 
   @SuppressWarnings("unchecked")
   @Test
-  public void testGetInnerClass() throws Exception
+  public void getInnerClass() throws Exception
   {
     Class<?> innerClass = Classes.forName("js.util.test.ClassesUnitTest$InnerClass");
     assertNotNull(innerClass);
@@ -117,13 +153,13 @@ public class ClassesUnitTest
   }
 
   @Test
-  public void testInvokeOnConcreteType() throws Throwable
+  public void invokeOnConcreteType() throws Throwable
   {
     assertEquals(6, Classes.invoke(new InnerClass(), "addIntegers", 1, 2, 3));
   }
 
   @Test
-  public void testInvokeOnPrimitives() throws Throwable
+  public void invokeOnPrimitives() throws Throwable
   {
     assertEquals(3, Classes.invoke(new InnerClass(), "addInts", 1, 2));
   }
@@ -137,7 +173,7 @@ public class ClassesUnitTest
    * @throws Throwable rethrows interface invocation.
    */
   @Test
-  public void testInvokeOnInterface() throws Throwable
+  public void invokeOnInterface() throws Throwable
   {
     assertEquals(3, Classes.invoke(new InnerClass(), "addNumbers", new Integer(1), new Integer(2)));
   }
@@ -194,7 +230,7 @@ public class ClassesUnitTest
   }
 
   @Test
-  public void testListPackageResourcesFromLocalClasses()
+  public void listPackageResourcesFromLocalClasses()
   {
     Collection<String> resources = Classes.listPackageResources("js.util.test", "*.class");
     assertTrue(resources.size() > 0);
@@ -203,20 +239,21 @@ public class ClassesUnitTest
     assertTrue(resources.contains("js/util/test/ClassesUnitTest$InnerClass.class"));
   }
 
-  public void _testListPackageResourcesFromJar() throws ClassNotFoundException, IOException
+  @Test
+  public void listResourcesFromPackageRoot()
   {
-    Collection<String> resources = Classes.listPackageResources("js.dom.resources", "*.mod");
-    assertTrue(resources.size() > 0);
-    assertTrue(resources.contains("js/dom/resources/xhtml-datatypes-1.mod"));
-    assertTrue(resources.contains("js/dom/resources/xhtml-events-1.mod"));
-    assertTrue(resources.contains("js/dom/resources/xhtml-events-basic-1.mod"));
-    assertTrue(resources.contains("js/dom/resources/xhtml-framework-1.mod"));
-    assertTrue(resources.contains("js/dom/resources/xhtml-inlstyle-1.mod"));
-    assertTrue(resources.contains("js/dom/resources/xhtml-qname-1.mod"));
+    Collection<String> resources = Classes.listPackageResources("", "*.txt");
+    assertEquals(1, resources.size(), 0);
+    assertTrue(resources.contains("resource.txt"));
+  }
+
+  public void listPackageResourcesFromJar() throws ClassNotFoundException, IOException
+  {
+    // TODO: implement or remove this tets case
   }
 
   @Test
-  public void testIsInstantiable()
+  public void isInstantiable()
   {
     assertFalse(Classes.isInstantiable(InnerInterface.class));
     assertFalse(Classes.isInstantiable(AbstractClass.class));
@@ -225,14 +262,14 @@ public class ClassesUnitTest
   }
 
   @Test
-  public void testGetFieldValue()
+  public void getFieldValue()
   {
     InnerClass object = new InnerClass();
     assertEquals("string", Classes.getFieldValue(object, "string"));
   }
 
   @Test
-  public void testSetFieldValue()
+  public void setFieldValue()
   {
     InnerClass object = new InnerClass();
     Classes.setFieldValue(object, "string", "value");
@@ -240,7 +277,7 @@ public class ClassesUnitTest
   }
 
   @Test
-  public void testGetParameterTypes()
+  public void getParameterTypes()
   {
     Type[] types = Classes.getParameterTypes(new Object[]
     {
@@ -255,7 +292,7 @@ public class ClassesUnitTest
   }
 
   @Test
-  public void testLoadService()
+  public void loadService()
   {
     InnerInterface service = Classes.loadService(InnerInterface.class);
     assertNotNull(service);
@@ -264,14 +301,14 @@ public class ClassesUnitTest
   }
 
   @Test
-  public void testInvoke() throws Exception
+  public void invoke() throws Exception
   {
     InnerClass object = new InnerClass();
     assertEquals(6, Classes.invoke(object, "addIntegers", 1, 2, 3));
   }
 
   @Test
-  public void testInvokeSuperclass() throws Exception
+  public void invokeSuperclass() throws Exception
   {
     SuperClass object = new SuperClass();
     assertEquals(6, Classes.invoke(object, InnerClass.class, "addIntegers", 1, 2, 3));
