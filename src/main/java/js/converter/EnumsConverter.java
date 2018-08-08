@@ -26,6 +26,10 @@ final class EnumsConverter implements Converter
    * Create enumeration constant for given string and enumeration type.
    * 
    * @throws IllegalArgumentException string argument is not a valid constant for given enumeration type.
+   * @throws NumberFormatException if string argument is not a valid numeric value and value type implements
+   *           {@link OrdinalEnum}.
+   * @throws IndexOutOfBoundsException if value type implements {@link OrdinalEnum}, string argument is a valid number
+   *           but is not in the range accepted by target enumeration.
    */
   @SuppressWarnings("rawtypes")
   @Override
