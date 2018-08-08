@@ -19,15 +19,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import js.converter.Converter;
 import js.converter.ConverterException;
 import js.converter.ConverterRegistry;
+import js.lang.OrdinalEnum;
 import js.util.Strings;
 import js.util.Types;
 import junit.framework.TestCase;
-
-import org.junit.Before;
-import org.junit.Test;
 
 public class ConverterUnitTest
 {
@@ -213,7 +214,7 @@ public class ConverterUnitTest
     assertEquals(State.ACTIVE, state);
 
     assertNull(converter.asObject(null, State.class));
-    
+
     state = State.DETACHED;
     assertEquals("DETACHED", converter.asString(state));
   }
@@ -238,6 +239,19 @@ public class ConverterUnitTest
   }
 
   @Test
+  public void ordinalEnum()
+  {
+    OrdinalState state = converter.asObject("1", OrdinalState.class);
+    assertTrue(Types.isEnum(state));
+    assertEquals(OrdinalState.ACTIVE, state);
+
+    assertNull(converter.asObject(null, OrdinalState.class));
+
+    state = OrdinalState.DETACHED;
+    assertEquals("2", converter.asString(state));
+  }
+
+  @Test
   public void file()
   {
     File file = converter.asObject("/var/tmp/file.tmp", File.class);
@@ -254,28 +268,28 @@ public class ConverterUnitTest
     assertEquals((byte)44, (byte)converter.asObject("44", byte.class));
     assertEquals((byte)44, (byte)converter.asObject("44", Byte.class));
     assertEquals("44", converter.asString(44));
-    
+
     assertEquals((short)0, (short)converter.asObject("0", short.class));
     assertEquals((short)4444, (short)converter.asObject("4444", short.class));
     assertEquals((short)4444, (short)converter.asObject("4444", Short.class));
     assertEquals("4444", converter.asString(4444));
-    
+
     assertEquals(0, (int)converter.asObject("0", int.class));
     assertEquals(444444, (int)converter.asObject("444444", int.class));
     assertEquals(444444, (int)converter.asObject("444444", Integer.class));
     assertEquals("444444", converter.asString(444444));
-    
+
     assertEquals(0L, (long)converter.asObject("0", long.class));
     assertEquals(44444444L, (long)converter.asObject("44444444", long.class));
     assertEquals(44444444L, (long)converter.asObject("44444444", Long.class));
     assertEquals("44444444", converter.asString(44444444));
-    
+
     assertEquals(44.44F, converter.asObject("44.44", float.class), 0.0);
     assertEquals(44.44F, converter.asObject("44.44", Float.class), 0.0);
     assertEquals(44.44F, converter.asObject("4.444E1", float.class), 0.0);
     assertEquals(44.44F, converter.asObject("4.444E1", Float.class), 0.0);
     assertEquals("44.44", converter.asString(44.44));
-    
+
     assertEquals(44444444.44444444, converter.asObject("44444444.44444444", double.class), 0);
     assertEquals(44444444.44444444, converter.asObject("44444444.44444444", Double.class), 0);
     assertEquals(44444444.44444444, converter.asObject("4.444444444444444E7", double.class), 0);
@@ -358,7 +372,7 @@ public class ConverterUnitTest
     assertEquals("Europe/Bucharest", timezone.getID());
 
     assertNull(converter.asObject(null, TimeZone.class));
-    
+
     timezone = TimeZone.getTimeZone(s);
     assertEquals(s, converter.asString(timezone));
     assertFalse(timezone == converter.asObject(converter.asString(timezone), TimeZone.class));
@@ -373,7 +387,7 @@ public class ConverterUnitTest
     assertEquals(s, url.toExternalForm());
 
     assertNull(converter.asObject(null, URL.class));
-    
+
     url = new URL(s);
     assertEquals(s, converter.asString(url));
     assertFalse(url == converter.asObject(converter.asString(url), URL.class));
@@ -446,6 +460,11 @@ public class ConverterUnitTest
   }
 
   private static enum State
+  {
+    NONE, ACTIVE, DETACHED
+  }
+
+  private static enum OrdinalState implements OrdinalEnum
   {
     NONE, ACTIVE, DETACHED
   }
