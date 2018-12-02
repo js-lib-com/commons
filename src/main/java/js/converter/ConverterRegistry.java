@@ -336,9 +336,6 @@ public final class ConverterRegistry implements Converter
   @SuppressWarnings("unchecked")
   private Converter getConverter(Class<?> valueType)
   {
-    if(valueType.isEnum()) {
-      return enumsConverter;
-    }
     Converter c = converters.get(valueType);
     if(c == null) {
       synchronized(converters) {
@@ -369,7 +366,10 @@ public final class ConverterRegistry implements Converter
         }
       }
     }
-    // at this point converter can still be null in which case hasType returns false
+    // at this point converter can still be null
+    if(c == null && valueType.isEnum()) {
+      return enumsConverter;
+    }
     return c;
   }
 
