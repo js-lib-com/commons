@@ -9,9 +9,9 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * File size format - 12.3KB. A file size has a numeric part and units; units are selected so that to be represented
- * with smallest numeric part but greater or equals one. Numeric part is formatted according locale settings. For
- * supported units take a look at {@link Units} class.
+ * File size format - 12.30 KB. A file size has a numeric part and units; units are selected so that file size to be
+ * represented with smallest numeric part but greater or equals one. Numeric part is formatted according locale settings
+ * and always has two decimals. For supported units take a look at {@link Units} class.
  * 
  * @author Iulian Rotaru
  * @version final
@@ -84,7 +84,7 @@ public final class FileSize implements Format
    * <p>
    * Returns null if <code>value</code> argument is null or empty.
    * 
-   * @param value file size value.
+   * @param value formatted file size value.
    * @return file size as {@link Long} instance, possible null if <code>value</code> argument is null or empty.
    * @throws ParseException if <code>value</code> is not formated as described above.
    */
@@ -163,11 +163,11 @@ public final class FileSize implements Format
 
     private static Map<String, Units> UNITS = new HashMap<>();
     static {
-      UNITS.put("B", Units.B);
-      UNITS.put("KB", Units.KB);
-      UNITS.put("MB", Units.MB);
-      UNITS.put("GB", Units.GB);
-      UNITS.put("TB", Units.TB);
+      UNITS.put("B", B);
+      UNITS.put("KB", KB);
+      UNITS.put("MB", MB);
+      UNITS.put("GB", GB);
+      UNITS.put("TB", TB);
     }
 
     public static Units forName(String name)
