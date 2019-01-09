@@ -6,12 +6,15 @@ package js.log;
  * @author Iulian Rotaru
  * @version final
  */
-public class DefaultLogContext implements LogContext {
-	@Override
-	public void push(String diagnosticContext) {
-	}
+public class DefaultLogContext implements LogContext
+{
+  @Override
+  public void put(String name, Object value)
+  {
+  }
 
-	@Override
-	public void pop() {
-	}
+  @Override
+  public void clear()
+  {
+  }
 }

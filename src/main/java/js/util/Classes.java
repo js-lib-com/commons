@@ -642,13 +642,18 @@ public class Classes
   }
 
   /**
-   * Get class or superclass named field with checked exception. Tries to get requested field from given class; if not
-   * found try with superclass, if any. If both attempts fail throw {@link NoSuchFieldException}.
+   * Get named field of requested class class or its super-classes package hierarchy, with checked exception. Tries to
+   * get requested field from given class; if not found try with super-classes hierarchy but limited to requested class
+   * package. If field still not found throw {@link NoSuchFieldException}.
+   * <p>
+   * Implementation note: if field not found on requested class this method is executed recursively as long as
+   * superclass is in the same package as requested base class. Is not possible to retrieve inherited fields if
+   * superclass descendant is in different package.
    * 
    * @param clazz class to search for named field,
    * @param fieldName the name of field to retrieve.
    * @return requested field.
-   * @throws NoSuchFieldException if class or superclass has no field with requested name.
+   * @throws NoSuchFieldException if class or super-class package hierarchy has no field with requested name.
    */
   public static Field getFieldEx(Class<?> clazz, String fieldName) throws NoSuchFieldException
   {

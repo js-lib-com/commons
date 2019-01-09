@@ -35,6 +35,23 @@ public final class LogFactory {
 	/** Logger implementation provider. */
 	private static LogProvider provider = provider();
 
+    /**
+     * Load log provider from Java services and return the first instance found. It is expected to have only one log service
+     * provider deployed on runtime; it more found just blindly select the first found.
+     * <p>
+     * Returns {@link DefaultLogProvider} if no log provider service found.
+     * 
+     * @return log provider instance.
+     */
+    private static LogProvider provider() {
+        Iterable<LogProvider> providers = ServiceLoader.load(LogProvider.class);
+        for (LogProvider provider : providers) {
+            // for now ignore multiple implementations and choose blindly the first one
+            return provider;
+        }
+        return new DefaultLogProvider();
+    }
+
 	/** Prevent default constructor synthesis. */
 	private LogFactory() {
 	}
@@ -48,7 +65,6 @@ public final class LogFactory {
 	 * @param config configuration object.
 	 */
 	public static void config(Config config) {
-		provider = provider();
 		try {
 			provider.config(config);
 		} catch (Throwable t) {
@@ -58,23 +74,6 @@ public final class LogFactory {
 			log.error("Fail on logger provider configuration. Reset logging system to default provider.");
 			log.dump("Logging configuration stack dump:", t);
 		}
-	}
-
-	/**
-	 * Load log provider from Java services and return the first instance found. It is expected to have only one log service
-	 * provider deployed on runtime; it more found just blindly select the first found.
-	 * <p>
-	 * Returns {@link DefaultLogProvider} if no log provider service found.
-	 * 
-	 * @return log provider instance.
-	 */
-	private static LogProvider provider() {
-		Iterable<LogProvider> providers = ServiceLoader.load(LogProvider.class);
-		for (LogProvider provider : providers) {
-			// for now ignore multiple implementations and choose blindly the first one
-			return provider;
-		}
-		return new DefaultLogProvider();
 	}
 
 	/**
