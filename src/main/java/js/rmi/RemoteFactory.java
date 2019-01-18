@@ -44,7 +44,8 @@ public interface RemoteFactory
    * @param interfaceClass interface implemented by remote class.
    * @param <T> instance type.
    * @return Java Proxy instance for given interface.
-   * @throws UnsupportedProtocolException if URL protocol is not supported.
+   * @throws UnsupportedProtocolException if URL protocol is not supported or arguments are otherwise not valid or null
+   *           - in which case root cause has details about erroneous argument.
    */
   <T> T getRemoteInstance(String implementationURL, Class<? super T> interfaceClass) throws UnsupportedProtocolException;
 }

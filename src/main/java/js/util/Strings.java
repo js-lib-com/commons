@@ -592,7 +592,7 @@ public class Strings
   /** Default separators used when {@link #isSeparator(char, char...)} separators list is empty. */
   private static final char[] DEFAULT_SEPARATORS = new char[]
   {
-    ' '
+      ' '
   };
 
   /**
@@ -1621,10 +1621,11 @@ public class Strings
   }
 
   /**
-   * Get URL protocol or null if given URL does not contains one. Returns null if given URL argument is null or empty.
+   * Get URL protocol - lower case, or null if given URL does not contains one. Returns null if given URL argument is
+   * null or empty.
    * 
    * @param url URL to retrieve the protocol.
-   * @return URL protocol, possible null.
+   * @return lower case URL protocol, possible null.
    */
   public static String getProtocol(String url)
   {
@@ -1635,6 +1636,6 @@ public class Strings
     if(protocolSeparatorIndex == -1) {
       return null;
     }
-    return url.substring(0, protocolSeparatorIndex);
+    return url.substring(0, protocolSeparatorIndex).toLowerCase();
   }
 }
