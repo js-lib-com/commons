@@ -3,7 +3,8 @@ package js.rmi;
 /**
  * Service provider for remote instance factories allows for {@link RemoteFactory} implementations as standard Java
  * service. Implementation of this service should provide a remote factory instance able to handle URL protocol declared
- * by {@link #getProtocol()}.
+ * by {@link #getProtocols()}. Protocol syntax is implementation detail but is part of <code>implementationURL</code>
+ * supplied to {@link RemoteFactory#getRemoteInstance(String, Class)}.
  * <p>
  * Being a Java service, implementation of this class should have a public default constructor and need to be declared
  * by distributed archive on <code>META-INF/services/js.rmi.RemoteFactoryProvider</code> file.
@@ -14,14 +15,14 @@ package js.rmi;
 public interface RemoteFactoryProvider
 {
   /**
-   * Get URL protocol that {@link #getRemoteFactory()} is able to handle.
+   * Get URL protocols that {@link #getRemoteFactory()} is able to handle.
    * 
-   * @return URL protocol handled by remote instance factory.
+   * @return URL protocols list handled by remote instance factory.
    */
-  String getProtocol();
+  String[] getProtocols();
 
   /**
-   * Get remote factory instance able to handle declared {@link #getProtocol()}.
+   * Get remote factory instance able to handle declared {@link #getProtocols()}.
    * 
    * @return remote factory for protocol.
    */
