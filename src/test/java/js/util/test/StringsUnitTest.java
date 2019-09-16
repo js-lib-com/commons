@@ -189,10 +189,14 @@ public class StringsUnitTest
 
   private static void assertPairs(List<Pair> pairs)
   {
-    assertEquals("john", pairs.get(0).first());
-    assertEquals("doe", pairs.get(0).second());
-    assertEquals("jane", pairs.get(1).first());
-    assertEquals("doe", pairs.get(1).second());
+    assertThat(pairs.get(0).first(), equalTo("john"));
+    assertThat(pairs.get(0).key(), equalTo("john"));
+    assertThat(pairs.get(0).second(), equalTo("doe"));
+    assertThat(pairs.get(0).value(), equalTo("doe"));
+    assertThat(pairs.get(1).first(), equalTo("jane"));
+    assertThat(pairs.get(1).key(), equalTo("jane"));
+    assertThat(pairs.get(1).second(), equalTo("doe"));
+    assertThat(pairs.get(1).value(), equalTo("doe"));
   }
 
   @Test
