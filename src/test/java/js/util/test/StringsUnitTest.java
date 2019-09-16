@@ -1,8 +1,14 @@
 package js.util.test;
 
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -13,12 +19,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.junit.Test;
+
 import js.lang.Handler;
 import js.lang.Pair;
 import js.util.Strings;
-import junit.framework.TestCase;
-
-import org.junit.Test;
 
 public class StringsUnitTest
 {
@@ -84,6 +89,40 @@ public class StringsUnitTest
   }
 
   @Test
+  public void splitStringByString_InvalidSeparator()
+  {
+    assertThat(Strings.split(null, ","), nullValue());
+    assertThat(Strings.split("one two three four", (String)null), nullValue());
+    assertThat(Strings.split("", ","), empty());
+    assertThat(Strings.split("one,two,three,four", ""), empty());
+    assertThat(Strings.split(null, ""), nullValue());
+    assertThat(Strings.split("", (String)null), nullValue());
+  }
+
+  @Test
+  public void typedSplitStringByString_Integers()
+  {
+    List<Integer> integers = Strings.split("10,11,12,13", ",", Integer.class);
+    assertThat(integers, notNullValue());
+    assertThat(integers, hasSize(4));
+    assertThat(integers.get(0), equalTo(10));
+    assertThat(integers.get(1), equalTo(11));
+    assertThat(integers.get(2), equalTo(12));
+    assertThat(integers.get(3), equalTo(13));
+  }
+
+  @Test
+  public void typedSplitStringByString_InvalidSeparator()
+  {
+    assertThat(Strings.split(null, ",", Integer.class), nullValue());
+    assertThat(Strings.split("1 2 3 4", (String)null, Integer.class), nullValue());
+    assertThat(Strings.split("", ",", Integer.class), empty());
+    assertThat(Strings.split("1,2,3,4", "", Integer.class), empty());
+    assertThat(Strings.split(null, "", Integer.class), nullValue());
+    assertThat(Strings.split("", (String)null, Integer.class), nullValue());
+  }
+
+  @Test
   public void splitTrim()
   {
     assertEqualsList(Strings.split("  one, two, three, four  ", ','));
@@ -94,11 +133,12 @@ public class StringsUnitTest
 
   private static void assertEqualsList(List<String> strings)
   {
-    assertEquals(4, strings.size());
-    assertEquals("one", strings.get(0));
-    assertEquals("two", strings.get(1));
-    assertEquals("three", strings.get(2));
-    assertEquals("four", strings.get(3));
+    assertThat(strings, notNullValue());
+    assertThat(strings, hasSize(4));
+    assertThat(strings.get(0), equalTo("one"));
+    assertThat(strings.get(1), equalTo("two"));
+    assertThat(strings.get(2), equalTo("three"));
+    assertThat(strings.get(3), equalTo("four"));
   }
 
   @Test
@@ -229,23 +269,22 @@ public class StringsUnitTest
   @Test
   public void escapeRexExp()
   {
-    TestCase.assertEquals("\\/", Strings.escapeRegExp("/"));
-    TestCase.assertEquals("\\.", Strings.escapeRegExp("."));
-    TestCase.assertEquals("\\*", Strings.escapeRegExp("*"));
-    TestCase.assertEquals("\\?", Strings.escapeRegExp("?"));
-    TestCase.assertEquals("\\|", Strings.escapeRegExp("|"));
-    TestCase.assertEquals("\\(", Strings.escapeRegExp("("));
-    TestCase.assertEquals("\\)", Strings.escapeRegExp(")"));
-    TestCase.assertEquals("\\[", Strings.escapeRegExp("["));
-    TestCase.assertEquals("\\]", Strings.escapeRegExp("]"));
-    TestCase.assertEquals("\\{", Strings.escapeRegExp("{"));
-    TestCase.assertEquals("\\}", Strings.escapeRegExp("}"));
-    TestCase.assertEquals("\\\\", Strings.escapeRegExp("\\"));
-    TestCase.assertEquals("\\^", Strings.escapeRegExp("^"));
-    TestCase.assertEquals("\\$", Strings.escapeRegExp("$"));
-    TestCase.assertEquals("a\\/b\\.c\\*d\\?e\\|f\\(g\\)h\\[i\\]j\\{k\\}l\\\\m\\^n\\$ bla bla bla",
-        Strings.escapeRegExp("a/b.c*d?e|f(g)h[i]j{k}l\\m^n$ bla bla bla"));
-    TestCase.assertEquals("abcdefghijklmn", Strings.escapeRegExp("abcdefghijklmn"));
+    assertEquals("\\/", Strings.escapeRegExp("/"));
+    assertEquals("\\.", Strings.escapeRegExp("."));
+    assertEquals("\\*", Strings.escapeRegExp("*"));
+    assertEquals("\\?", Strings.escapeRegExp("?"));
+    assertEquals("\\|", Strings.escapeRegExp("|"));
+    assertEquals("\\(", Strings.escapeRegExp("("));
+    assertEquals("\\)", Strings.escapeRegExp(")"));
+    assertEquals("\\[", Strings.escapeRegExp("["));
+    assertEquals("\\]", Strings.escapeRegExp("]"));
+    assertEquals("\\{", Strings.escapeRegExp("{"));
+    assertEquals("\\}", Strings.escapeRegExp("}"));
+    assertEquals("\\\\", Strings.escapeRegExp("\\"));
+    assertEquals("\\^", Strings.escapeRegExp("^"));
+    assertEquals("\\$", Strings.escapeRegExp("$"));
+    assertEquals("a\\/b\\.c\\*d\\?e\\|f\\(g\\)h\\[i\\]j\\{k\\}l\\\\m\\^n\\$ bla bla bla", Strings.escapeRegExp("a/b.c*d?e|f(g)h[i]j{k}l\\m^n$ bla bla bla"));
+    assertEquals("abcdefghijklmn", Strings.escapeRegExp("abcdefghijklmn"));
   }
 
   @Test

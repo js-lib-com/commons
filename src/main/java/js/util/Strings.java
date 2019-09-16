@@ -30,6 +30,8 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import js.converter.Converter;
+import js.converter.ConverterRegistry;
 import js.io.VariablesWriter;
 import js.lang.BugError;
 import js.lang.Handler;
@@ -618,17 +620,23 @@ public class Strings
   }
 
   /**
-   * Splits string using specified string separator and returns trimmed values. Returns null if string argument is null
-   * and empty list if is empty.
+   * Splits string using specified string separator and returns trimmed values. Returns null if any argument is null and
+   * empty list if any argument is empty.
    * 
    * @param string source string,
    * @param separator string used as separator.
-   * @return strings list, possible empty.
+   * @return strings list, possible null or empty.
    */
   public static List<String> split(String string, String separator)
   {
+    if(string == null || separator == null) {
+      return null;
+    }
     final int separatorLength = separator.length();
     final List<String> list = new ArrayList<String>();
+    if(separator.isEmpty()) {
+      return list;
+    }
 
     int fromIndex = 0;
     for(;;) {
@@ -643,6 +651,44 @@ public class Strings
     }
     if(fromIndex < string.length()) {
       list.add(string.substring(fromIndex).trim());
+    }
+    return list;
+  }
+
+  /**
+   * Splits string using specified string separator and returns values converted to requested type. Returns null if any
+   * argument is null and empty list if any argument is empty.
+   * 
+   * @param string source string,
+   * @param separator string used as separator,
+   * @param type requested list item type.
+   * @return typed list, possible empty.
+   */
+  public static <T> List<T> split(String string, String separator, Class<T> type)
+  {
+    if(string == null || separator == null) {
+      return null;
+    }
+    final Converter converter = ConverterRegistry.getConverter();
+    final int separatorLength = separator.length();
+    final List<T> list = new ArrayList<>();
+    if(separator.isEmpty()) {
+      return list;
+    }
+
+    int fromIndex = 0;
+    for(;;) {
+      int endIndex = string.indexOf(separator, fromIndex);
+      if(endIndex == -1) {
+        break;
+      }
+      if(fromIndex < endIndex) {
+        list.add(converter.asObject(string.substring(fromIndex, endIndex).trim(), type));
+      }
+      fromIndex = endIndex + separatorLength;
+    }
+    if(fromIndex < string.length()) {
+      list.add(converter.asObject(string.substring(fromIndex).trim(), type));
     }
     return list;
   }
