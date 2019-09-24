@@ -662,6 +662,7 @@ public class Strings
    * @param string source string,
    * @param separator string used as separator,
    * @param type requested list item type.
+   * @param <T> generic type to convert string parts.
    * @return typed list, possible empty.
    */
   public static <T> List<T> split(String string, String separator, Class<T> type)
