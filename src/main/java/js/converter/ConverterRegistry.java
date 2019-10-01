@@ -3,6 +3,7 @@ package js.converter;
 import java.io.File;
 import java.lang.reflect.Type;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -68,6 +69,7 @@ import js.util.Types;
  * <li>{@link URL}
  * <li>{@link Locale}
  * <li>{@link TimeZone}
+ * <li>{@link Charset}
  * </ul>
  * 
  * <p>
@@ -208,6 +210,7 @@ public final class ConverterRegistry implements Converter
     this.converters.put(File.class, new FileConverter());
     this.converters.put(URL.class, new UrlConverter());
     this.converters.put(Locale.class, new LocaleConverter());
+    this.converters.put(Charset.class, new CharsetConverter());
 
     this.abstractConverters.put(TimeZone.class, new TimeZoneConverter());
 
