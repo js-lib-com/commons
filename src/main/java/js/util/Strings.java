@@ -104,33 +104,88 @@ public class Strings
   }
 
   /**
-   * Convert words joined by some separator characters to Java class member name. Currently supported separators are
-   * space (' '), dash ('-'), underscore ('_'), colon (':'), semicolon (';') and plus ('+').
+   * Convert dashed name to Java member name. A dashed name contains only lower case and words are separated by dash
+   * ('-'). By convention dashed names are used by HTML and CSS.
    * <p>
    * Note that first character of returned member name is lower case, e.g. <code>this-is-a-string</code> is converted to
-   * <code>thisIsAString</code>. Also given words case does not mater, that is, <code>THIS-IS-A-STRING</code> is
-   * converted to the same <code>thisIsAString</code>.
+   * <code>thisIsAString</code>.
    * <p>
    * Returns null if words argument is null and empty if empty.
    * 
-   * @param words string to convert.
+   * @param dashedName dashed name to convert.
    * @return camel case member name.
    */
-  public static String toMemberName(String words)
+  public static String dashedToMemberName(String dashedName)
   {
-    if(words == null) {
+    if(dashedName == null) {
       return null;
     }
-    if(words.isEmpty()) {
+    if(dashedName.isEmpty()) {
       return "";
     }
 
-    List<String> parts = split(words, ' ', '-', '_', ':', ';', '+');
-    StringBuilder sb = new StringBuilder(parts.get(0).toLowerCase());
+    String[] words = dashedName.split("-");
+    StringBuilder sb = new StringBuilder();
 
-    for(int i = 1; i < parts.size(); i++) {
-      sb.append(Character.toUpperCase(parts.get(i).charAt(0)));
-      sb.append(parts.get(i).substring(1).toLowerCase());
+    boolean first = true;
+    for(String word : words) {
+      if(word.isEmpty()) {
+        continue;
+      }
+      if(first) {
+        first = false;
+        sb.append(word);
+        continue;
+      }
+
+      sb.append(Character.toUpperCase(word.charAt(0)));
+      sb.append(word.substring(1));
+    }
+    return sb.toString();
+  }
+
+  @Deprecated
+  public static String toMemberName(String dashedName)
+  {
+    return dashedToMemberName(dashedName);
+  }
+
+  /**
+   * Convert enumeration constant name to Java member name. By convention enumeration constant names are all upper case
+   * and separated by underscore ('_'). This method relies on this convention. Providing enumeration constant names not
+   * obeying this convention will generate not predictable results.
+   * <p>
+   * Note that first character of returned member name is lower case, e.g. <code>POSTAL_ADDRESS</code> is converted to
+   * <code>postalAddress</code>. If given enumeration constant name has a single word return it as lower case, e.g.
+   * <code>NAME</code> is converted to <code>name</code>.
+   * <p>
+   * Returns null if words argument is null and empty if empty.
+   * 
+   * @param enumName enumeration name to convert to member name.
+   * @return camel case member name.
+   */
+  public static String enumToMemberName(Enum<?> enumName)
+  {
+    if(enumName == null) {
+      return null;
+    }
+
+    String[] words = enumName.name().split("_");
+    StringBuilder sb = new StringBuilder();
+
+    boolean first = true;
+    for(String word : words) {
+      if(word.isEmpty()) {
+        continue;
+      }
+      if(first) {
+        first = false;
+        sb.append(word.toLowerCase());
+        continue;
+      }
+
+      sb.append(Character.toUpperCase(word.charAt(0)));
+      sb.append(word.substring(1).toLowerCase());
     }
     return sb.toString();
   }
@@ -143,7 +198,7 @@ public class Strings
    * @param memberName Java style, camel case member name.
    * @return dashed string.
    */
-  public static String toDashCase(String memberName)
+  public static String memberToDashCase(String memberName)
   {
     if(memberName == null) {
       return null;
@@ -165,6 +220,12 @@ public class Strings
       builder.append(c);
     }
     return builder.toString();
+  }
+
+  @Deprecated
+  public static String toDashCase(String memberName)
+  {
+    return memberToDashCase(memberName);
   }
 
   /** ISO8601 date format for {@link #toISO(Date)}. */

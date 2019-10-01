@@ -39,11 +39,34 @@ public class StringsUnitTest
   }
 
   @Test
-  public void toMemberName()
+  public void dashedToMemberName()
   {
-    assertEquals("thisIsAString", Strings.toMemberName("this-is-a-string"));
-    assertEquals("thisIsAString", Strings.toMemberName("this-is--a-string"));
-    assertEquals("upload", Strings.toMemberName("upload"));
+    assertEquals("thisIsAString", Strings.dashedToMemberName("this-is-a-string"));
+    assertEquals("thisIsAString", Strings.dashedToMemberName("this-is--a-string"));
+    assertEquals("thisIsAString", Strings.dashedToMemberName("thisIsAString"));
+    assertEquals("upload", Strings.dashedToMemberName("upload"));
+    assertTrue(Strings.dashedToMemberName("").isEmpty());
+    assertNull(Strings.dashedToMemberName(null));
+  }
+
+  @Test
+  public void memberToDashCase()
+  {
+    assertEquals("this-is-a-string", Strings.memberToDashCase("thisIsAString"));
+    assertEquals("a-b-c", Strings.memberToDashCase("ABC"));
+    assertTrue(Strings.memberToDashCase("").isEmpty());
+    assertNull(Strings.memberToDashCase(null));
+  }
+
+  @Test
+  public void enumToMemberName()
+  {
+    assertEquals("none", Strings.enumToMemberName(EnumNames.NONE));
+    assertEquals("postalAddress", Strings.enumToMemberName(EnumNames.POSTAL_ADDRESS));
+    assertEquals("postalAddress", Strings.enumToMemberName(EnumNames._POSTAL__ADDRESS_));
+    assertEquals("none", Strings.enumToMemberName(EnumNames.none));
+    assertEquals("postaladdress", Strings.enumToMemberName(EnumNames.postalAddress));
+    assertNull(Strings.enumToMemberName(null));
   }
 
   @Test
@@ -53,13 +76,6 @@ public class StringsUnitTest
     assertTrue(Strings.isMemberName("upload"));
     assertFalse(Strings.isMemberName(""));
     assertFalse(Strings.isMemberName(null));
-  }
-
-  @Test
-  public void dashCase()
-  {
-    assertEquals("this-is-a-string", Strings.toDashCase("thisIsAString"));
-    assertEquals("a-b-c", Strings.toDashCase("ABC"));
   }
 
   @Test
@@ -448,5 +464,12 @@ public class StringsUnitTest
     assertNull(Strings.getProtocol(""));
     assertNull(Strings.getProtocol("server.com/resource"));
     assertNull(Strings.getProtocol("http:/server.com"));
+  }
+
+  // ----------------------------------------------------------------------------------------------
+
+  private enum EnumNames
+  {
+    NONE, POSTAL_ADDRESS, _POSTAL__ADDRESS_, none, postalAddress
   }
 }
