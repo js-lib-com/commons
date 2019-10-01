@@ -104,8 +104,12 @@ public class Strings
   }
 
   /**
-   * Convert dash separated words to Java class member name. Note that first character of returned member name is lower
-   * case, e.g. <code>this-is-a-string</code> is converted to <code>thisIsAString</code>.
+   * Convert words joined by some separator characters to Java class member name. Currently supported separators are
+   * space (' '), dash ('-'), underscore ('_'), colon (':'), semicolon (';') and plus ('+').
+   * <p>
+   * Note that first character of returned member name is lower case, e.g. <code>this-is-a-string</code> is converted to
+   * <code>thisIsAString</code>. Also given words case does not mater, that is, <code>THIS-IS-A-STRING</code> is
+   * converted to the same <code>thisIsAString</code>.
    * <p>
    * Returns null if words argument is null and empty if empty.
    * 
@@ -121,13 +125,12 @@ public class Strings
       return "";
     }
 
-    String[] parts = words.split("-+");
-    StringBuilder sb = new StringBuilder(parts[0]);
+    List<String> parts = split(words, ' ', '-', '_', ':', ';', '+');
+    StringBuilder sb = new StringBuilder(parts.get(0).toLowerCase());
 
-    for(int i = 1; i < parts.length; i++) {
-      assert parts[i].length() > 0;
-      sb.append(Character.toUpperCase(parts[i].charAt(0)));
-      sb.append(parts[i].substring(1));
+    for(int i = 1; i < parts.size(); i++) {
+      sb.append(Character.toUpperCase(parts.get(i).charAt(0)));
+      sb.append(parts.get(i).substring(1).toLowerCase());
     }
     return sb.toString();
   }
