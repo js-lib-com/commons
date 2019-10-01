@@ -642,6 +642,34 @@ public class Classes
   }
 
   /**
+   * Variant of {@link #getOptionalField(Class, String)} that extends field searching on inheritance hierarchy. Field
+   * searching behaves similar to {@link #getFieldEx(Class, String)} in the sense that super-classes hierarchy is
+   * limited to given class package.
+   * 
+   * @param clazz Java class to return field from,
+   * @param fieldName field name.
+   * @return class reflective field or null.
+   */
+  public static Field getOptionalFieldEx(Class<?> clazz, String fieldName)
+  {
+    try {
+      Field field = clazz.getDeclaredField(fieldName);
+      field.setAccessible(true);
+      return field;
+    }
+    catch(NoSuchFieldException e) {
+      Class<?> superclass = clazz.getSuperclass();
+      if(superclass != null && clazz.getPackage().equals(superclass.getPackage())) {
+        return getOptionalFieldEx(superclass, fieldName);
+      }
+      return null;
+    }
+    catch(SecurityException e) {
+      throw new BugError(e);
+    }
+  }
+
+  /**
    * Get named field of requested class class or its super-classes package hierarchy, with checked exception. Tries to
    * get requested field from given class; if not found try with super-classes hierarchy but limited to requested class
    * package. If field still not found throw {@link NoSuchFieldException}.
