@@ -1,10 +1,11 @@
 package js.lang;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.Properties;
 import java.util.Stack;
 
@@ -20,7 +21,8 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * Configuration object builder. Create configuration object loaded from various sources.
  * <p>
- * Usage pattern is trivial: create configuration builder instance for desired configuration source and invoke {@link #build()}.
+ * Usage pattern is trivial: create configuration builder instance for desired configuration source and invoke
+ * {@link #build()}.
  * 
  * <pre>
  * ConfigBuilder builder = new ConfigBuilder(new File(&quot;conf/logs.xml&quot;));
@@ -32,164 +34,190 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author Iulian Rotaru
  * @version final
  */
-public class ConfigBuilder {
-	/** Configuration source XML stream. */
-	private InputStream xmlStream;
+public class ConfigBuilder
+{
+  /** Configuration source XML stream. */
+  private InputSource inputSource;
 
-	/** Configuration properties. */
-	private Properties properties;
+  /** Configuration properties. */
+  private Properties properties;
 
-	/**
-	 * Create configuration builder from XML represented as string, merrely for tests.
-	 * 
-	 * @param xml source XML serialized as string.
-	 */
-	public ConfigBuilder(String xml) {
-		this(new ByteArrayInputStream(xml.getBytes()));
-	}
+  /**
+   * Create configuration builder from XML represented as string, merely for tests.
+   * 
+   * @param xml source XML serialized as string.
+   */
+  public ConfigBuilder(String xml)
+  {
+    this(new StringReader(xml));
+  }
 
-	/**
-	 * Create configuration builder from XML file.
-	 * 
-	 * @param xmlFile source XML file.
-	 * @throws FileNotFoundException if source XML file does not exist.
-	 */
-	public ConfigBuilder(File xmlFile) throws FileNotFoundException {
-		this(new FileInputStream(xmlFile));
-	}
+  /**
+   * Create configuration builder from XML file.
+   * 
+   * @param xmlFile source XML file.
+   * @throws FileNotFoundException if source XML file does not exist.
+   */
+  public ConfigBuilder(File xmlFile) throws FileNotFoundException
+  {
+    this(new FileReader(xmlFile));
+  }
 
-	/**
-	 * Create configuration builder from XML stream.
-	 * 
-	 * @param xmlStream source XML stream.
-	 */
-	public ConfigBuilder(InputStream xmlStream) {
-		this.xmlStream = xmlStream;
-	}
+  /**
+   * Create configuration builder from XML character stream.
+   * 
+   * @param reader source character stream.
+   */
+  public ConfigBuilder(Reader reader)
+  {
+    this.inputSource = new InputSource(reader);
+  }
 
-	/**
-	 * Create configuration builder from Java properties.
-	 * 
-	 * @param properties source properties.
-	 */
-	public ConfigBuilder(Properties properties) {
-		this.properties = properties;
-	}
+  /**
+   * Create configuration builder from XML byte stream.
+   * 
+   * @param stream source byte stream.
+   */
+  public ConfigBuilder(InputStream stream)
+  {
+    this.inputSource = new InputSource(stream);
+  }
 
-	/** Protected default constructor for sub-classing. */
-	protected ConfigBuilder() {
-	}
+  /**
+   * Create configuration builder from Java properties.
+   * 
+   * @param properties source properties.
+   */
+  public ConfigBuilder(Properties properties)
+  {
+    this.properties = properties;
+  }
 
-	/**
-	 * Build configuration object. Configuration object is not reusable so this factory creates a new instance for every call.
-	 * 
-	 * @return newly created configuration object.
-	 * @throws ConfigException if XML stream read operation fails or is not well formed.
-	 */
-	public Config build() throws ConfigException {
-		if (properties != null) {
-			Config config = new Config("properties");
-			config.setProperties(properties);
-			return config;
-		}
+  /** Protected default constructor for sub-classing. */
+  protected ConfigBuilder()
+  {
+  }
 
-		try {
-			Loader loader = new Loader();
+  /**
+   * Build configuration object. Configuration object is not reusable so this factory creates a new instance for every
+   * call.
+   * 
+   * @return newly created configuration object.
+   * @throws ConfigException if XML stream read operation fails or is not well formed.
+   */
+  public Config build() throws ConfigException
+  {
+    if(properties != null) {
+      Config config = new Config("properties");
+      config.setProperties(properties);
+      return config;
+    }
 
-			SAXParserFactory factory = SAXParserFactory.newInstance();
-			SAXParser parser = factory.newSAXParser();
-			XMLReader reader = parser.getXMLReader();
-			reader.setContentHandler(loader);
-			reader.parse(new InputSource(xmlStream));
+    try {
+      Loader loader = new Loader();
 
-			return loader.getConfig();
-		} catch (Exception e) {
-			throw new ConfigException(e);
-		}
-	}
+      SAXParserFactory factory = SAXParserFactory.newInstance();
+      SAXParser parser = factory.newSAXParser();
+      XMLReader reader = parser.getXMLReader();
+      reader.setContentHandler(loader);
+      reader.parse(inputSource);
 
-	/**
-	 * SAX handler for configuration object loading from XML source.
-	 * 
-	 * @author Iulian Rotaru
-	 * @version final
-	 */
-	private static class Loader extends DefaultHandler {
-		/** Keep track of nested configuration objects. */
-		private Stack<Config> stack = new Stack<Config>();
-		/** String builder for text content. */
-		private StringBuilder textBuilder = new StringBuilder();
+      return loader.getConfig();
+    }
+    catch(Exception e) {
+      throw new ConfigException(e);
+    }
+  }
 
-		/**
-		 * Get configuration object loaded from XML source.
-		 * 
-		 * @return configuration object.
-		 */
-		public Config getConfig() {
-			return stack.get(0);
-		}
+  /**
+   * SAX handler for configuration object loading from XML source.
+   * 
+   * @author Iulian Rotaru
+   * @version final
+   */
+  private static class Loader extends DefaultHandler
+  {
+    /** Keep track of nested configuration objects. */
+    private Stack<Config> stack = new Stack<Config>();
+    /** String builder for text content. */
+    private StringBuilder textBuilder = new StringBuilder();
 
-		/**
-		 * Create configuration object with tag name and initialize its attributes. If tag name is <code>property</code> add new
-		 * property to last configuration object from stack. In any case reset text builder.
-		 */
-		@Override
-		public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-			textBuilder.setLength(0);
+    /**
+     * Get configuration object loaded from XML source.
+     * 
+     * @return configuration object.
+     */
+    public Config getConfig()
+    {
+      return stack.get(0);
+    }
 
-			if (qName.equals("property")) {
-				Config config = stack.peek();
-				config.setProperty(value(attributes, "name"), value(attributes, "value"));
-			} else {
-				Config config = new Config(qName);
-				if (!stack.isEmpty()) {
-					Config parent = stack.peek();
-					parent.addChild(config);
-				}
-				stack.push(config);
+    /**
+     * Create configuration object with tag name and initialize its attributes. If tag name is <code>property</code> add
+     * new property to last configuration object from stack. In any case reset text builder.
+     */
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
+    {
+      textBuilder.setLength(0);
 
-				for (int i = 0; i < attributes.getLength(); ++i) {
-					config.setAttribute(attributes.getQName(i), attributes.getValue(i));
-				}
-			}
-		}
+      if(qName.equals("property")) {
+        Config config = stack.peek();
+        config.setProperty(value(attributes, "name"), value(attributes, "value"));
+      }
+      else {
+        Config config = new Config(qName);
+        if(!stack.isEmpty()) {
+          Config parent = stack.peek();
+          parent.addChild(config);
+        }
+        stack.push(config);
 
-		/**
-		 * If text builder is not empty set text content to last configuration object from stack. If element tag is not
-		 * <code>property</code> pop most recent configuration object from stack.
-		 */
-		@Override
-		public void endElement(String uri, String localName, String qName) throws SAXException {
-			Config config = stack.peek();
-			if (textBuilder.length() > 0) {
-				config.setValue(textBuilder.toString());
-			}
+        for(int i = 0; i < attributes.getLength(); ++i) {
+          config.setAttribute(attributes.getQName(i), attributes.getValue(i));
+        }
+      }
+    }
 
-			if (!qName.equals("property") && stack.size() > 1) {
-				stack.pop();
-			}
-		}
+    /**
+     * If text builder is not empty set text content to last configuration object from stack. If element tag is not
+     * <code>property</code> pop most recent configuration object from stack.
+     */
+    @Override
+    public void endElement(String uri, String localName, String qName) throws SAXException
+    {
+      Config config = stack.peek();
+      if(textBuilder.length() > 0) {
+        config.setValue(textBuilder.toString());
+      }
 
-		/** Load characters into text builder. */
-		@Override
-		public void characters(char[] ch, int start, int length) throws SAXException {
-			textBuilder.append(ch, start, length);
-		}
+      if(!qName.equals("property") && stack.size() > 1) {
+        stack.pop();
+      }
+    }
 
-		/**
-		 * Get named attribute value throwing exception if not attribute found.
-		 * 
-		 * @param attributes attributes list,
-		 * @param attributeName name of attribute to retrieve.
-		 * @return attribute value.
-		 * @throws SAXException if there is no attribute with requested name.
-		 */
-		private static String value(Attributes attributes, String attributeName) throws SAXException {
-			String value = attributes.getValue(attributeName);
-			if (value == null) {
-				throw new SAXException(new ConfigException("Missing attribute <%s>.", attributeName));
-			}
-			return value;
-		}
-	}
+    /** Load characters into text builder. */
+    @Override
+    public void characters(char[] ch, int start, int length) throws SAXException
+    {
+      textBuilder.append(ch, start, length);
+    }
+
+    /**
+     * Get named attribute value throwing exception if not attribute found.
+     * 
+     * @param attributes attributes list,
+     * @param attributeName name of attribute to retrieve.
+     * @return attribute value.
+     * @throws SAXException if there is no attribute with requested name.
+     */
+    private static String value(Attributes attributes, String attributeName) throws SAXException
+    {
+      String value = attributes.getValue(attributeName);
+      if(value == null) {
+        throw new SAXException(new ConfigException("Missing attribute <%s>.", attributeName));
+      }
+      return value;
+    }
+  }
 }
