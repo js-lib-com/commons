@@ -61,12 +61,23 @@ public class StringsUnitTest
   @Test
   public void enumToMemberName()
   {
+    assertEquals("none", Strings.enumToMemberName("NONE"));
+    assertEquals("postalAddress", Strings.enumToMemberName("POSTAL_ADDRESS"));
+    assertEquals("postalAddress", Strings.enumToMemberName("_POSTAL__ADDRESS_"));
+    assertEquals("none", Strings.enumToMemberName("none"));
+    assertEquals("postaladdress", Strings.enumToMemberName("postalAddress"));
+    assertNull(Strings.enumToMemberName((String)null));
+  }
+
+  @Test
+  public void enumToMemberName_EnumerationConstant()
+  {
     assertEquals("none", Strings.enumToMemberName(EnumNames.NONE));
     assertEquals("postalAddress", Strings.enumToMemberName(EnumNames.POSTAL_ADDRESS));
     assertEquals("postalAddress", Strings.enumToMemberName(EnumNames._POSTAL__ADDRESS_));
     assertEquals("none", Strings.enumToMemberName(EnumNames.none));
     assertEquals("postaladdress", Strings.enumToMemberName(EnumNames.postalAddress));
-    assertNull(Strings.enumToMemberName(null));
+    assertNull(Strings.enumToMemberName((Enum<?>)null));
   }
 
   @Test

@@ -164,13 +164,13 @@ public class Strings
    * @param enumName enumeration name to convert to member name.
    * @return camel case member name.
    */
-  public static String enumToMemberName(Enum<?> enumName)
+  public static String enumToMemberName(String enumName)
   {
     if(enumName == null) {
       return null;
     }
 
-    String[] words = enumName.name().split("_");
+    String[] words = enumName.split("_");
     StringBuilder sb = new StringBuilder();
 
     boolean first = true;
@@ -188,6 +188,20 @@ public class Strings
       sb.append(word.substring(1).toLowerCase());
     }
     return sb.toString();
+  }
+
+  /**
+   * Typed variant of {@link #enumToMemberName(String)}.
+   * 
+   * @param enumName enumeration constant.
+   * @return camel case member name.
+   */
+  public static String enumToMemberName(Enum<?> enumName)
+  {
+    if(enumName == null) {
+      return null;
+    }
+    return enumToMemberName(enumName.name());
   }
 
   /**
