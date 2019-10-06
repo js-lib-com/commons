@@ -645,13 +645,18 @@ public class Classes
    * Variant of {@link #getOptionalField(Class, String)} that extends field searching on inheritance hierarchy. Field
    * searching behaves similar to {@link #getFieldEx(Class, String)} in the sense that super-classes hierarchy is
    * limited to given class package.
+   * <p>
+   * Null field name argument is considered not found and this method returns null.
    * 
    * @param clazz Java class to return field from,
-   * @param fieldName field name.
+   * @param fieldName field name, null accepted.
    * @return class reflective field or null.
    */
   public static Field getOptionalFieldEx(Class<?> clazz, String fieldName)
   {
+    if(fieldName == null) {
+      return null;
+    }
     try {
       Field field = clazz.getDeclaredField(fieldName);
       field.setAccessible(true);
