@@ -119,8 +119,11 @@ public class Params
    */
   public static void notNullOrEmpty(String parameter, String name) throws IllegalArgumentException
   {
-    if(parameter == null || parameter.isEmpty()) {
-      throw new IllegalArgumentException(name + " is null or empty.");
+    if(parameter == null) {
+      throw new IllegalArgumentException(name + " is null.");
+    }
+    if(parameter.isEmpty()) {
+      throw new IllegalArgumentException(name + " is empty.");
     }
   }
 
@@ -561,31 +564,33 @@ public class Params
 
   /**
    * Test if given boolean condition is true and throw exception if not. Exception message is that supplied by
-   * <code>message</code> parameter.
+   * <code>message</code> parameter. Message can be formatted as supported by {@link String#format(String, Object...)}.
    * 
    * @param condition boolean condition to test,
-   * @param message exception message.
+   * @param message exception message,
+   * @param args optional arguments if message is formatted.
    * @throws IllegalArgumentException if given condition is false.
    */
-  public static void isTrue(boolean condition, String message) throws IllegalArgumentException
+  public static void isTrue(boolean condition, String message, Object... args) throws IllegalArgumentException
   {
     if(!condition) {
-      throw new IllegalArgumentException(message);
+      throw new IllegalArgumentException(format(message, args));
     }
   }
 
   /**
    * Test if given boolean condition is false and throw exception if not. Exception message is that supplied by
-   * <code>message</code> parameter.
+   * <code>message</code> parameter. Message can be formatted as supported by {@link String#format(String, Object...)}.
    * 
    * @param condition boolean condition to test,
-   * @param message exception message.
+   * @param message exception message,
+   * @param args optional arguments if message is formatted.
    * @throws IllegalArgumentException if given condition is true.
    */
-  public static void isFalse(boolean condition, String message) throws IllegalArgumentException
+  public static void isFalse(boolean condition, String message, Object... args) throws IllegalArgumentException
   {
     if(condition) {
-      throw new IllegalArgumentException(message);
+      throw new IllegalArgumentException(format(message, args));
     }
   }
 
@@ -600,7 +605,7 @@ public class Params
   public static void isKindOf(Type parameter, Type typeToMatch, String name)
   {
     if(!Types.isKindOf(parameter, typeToMatch)) {
-      throw new IllegalArgumentException(Strings.format("%s is not %s.", name, typeToMatch));
+      throw new IllegalArgumentException(format("%s is not %s.", name, typeToMatch));
     }
   }
 }
