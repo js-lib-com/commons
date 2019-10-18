@@ -1,5 +1,10 @@
 package js.lang;
 
+import static js.util.Params.notEmpty;
+import static js.util.Params.notNull;
+import static js.util.Params.notNullOrEmpty;
+import static js.util.Params.range;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,7 +18,6 @@ import java.util.Set;
 import js.converter.Converter;
 import js.converter.ConverterException;
 import js.converter.ConverterRegistry;
-import js.util.Params;
 
 /**
  * Generic configuration object with XML like structure. A configuration object has a name, value, attributes,
@@ -83,7 +87,7 @@ public class Config
    */
   public Config(String name)
   {
-    Params.notNullOrEmpty(name, "Root name");
+    notNullOrEmpty(name, "Root name");
     this.name = name;
   }
 
@@ -98,9 +102,23 @@ public class Config
    */
   public void addChild(Config child)
   {
-    Params.notNull(child, "Child");
+    notNull(child, "Child");
     child.parent = this;
     children.add(child);
+  }
+
+  /**
+   * Convenient method to add a bunch of configuration objects at once. This method just iterate given list delegating
+   * {@link #addChild(Config)}. List order is preserved.
+   * 
+   * @param children configuration objects to add as child to this config instance.
+   */
+  public void addChildren(List<Config> children)
+  {
+    notNull(children, "Children");
+    for(Config child : children) {
+      addChild(child);
+    }
   }
 
   /**
@@ -115,8 +133,8 @@ public class Config
    */
   public void setAttribute(String name, String value)
   {
-    Params.notNullOrEmpty(name, "Attribute name");
-    Params.notEmpty(value, "Attribute value");
+    notNullOrEmpty(name, "Attribute name");
+    notEmpty(value, "Attribute value");
     if(value != null) {
       attributes.put(name, value);
     }
@@ -147,8 +165,8 @@ public class Config
    */
   public void setProperty(String name, String value)
   {
-    Params.notNullOrEmpty(name, "Property name");
-    Params.notEmpty(value, "Property value");
+    notNullOrEmpty(name, "Property name");
+    notEmpty(value, "Property value");
     if(value != null) {
       properties.setProperty(name, value);
     }
@@ -165,7 +183,7 @@ public class Config
    */
   public void setProperty(String name, Object value)
   {
-    Params.notNullOrEmpty(name, "Property name");
+    notNullOrEmpty(name, "Property name");
     if(value != null) {
       properties.setProperty(name, converter.asString(value));
     }
@@ -182,7 +200,7 @@ public class Config
   public void setValue(Object value)
   {
     if(value instanceof String) {
-      Params.notEmpty((String)value, "Value");
+      notEmpty((String)value, "Value");
       this.value = (String)value;
     }
     else {
@@ -236,7 +254,7 @@ public class Config
    */
   public boolean hasAttribute(String name)
   {
-    Params.notNullOrEmpty(name, "Attribute name");
+    notNullOrEmpty(name, "Attribute name");
     return attributes.containsKey(name);
   }
 
@@ -251,8 +269,8 @@ public class Config
    */
   public boolean hasAttribute(String name, String value)
   {
-    Params.notNullOrEmpty(name, "Attribute name");
-    Params.notNullOrEmpty(value, "Attribute value");
+    notNullOrEmpty(name, "Attribute name");
+    notNullOrEmpty(value, "Attribute value");
     return value.equals(attributes.get(name));
   }
 
@@ -266,7 +284,7 @@ public class Config
    */
   public String getAttribute(String name)
   {
-    Params.notNullOrEmpty(name, "Attribute name");
+    notNullOrEmpty(name, "Attribute name");
     return attributes.get(name);
   }
 
@@ -281,7 +299,7 @@ public class Config
    */
   public String getAttribute(String name, String defaultValue)
   {
-    Params.notNullOrEmpty(name, "Attribute name");
+    notNullOrEmpty(name, "Attribute name");
     return getAttribute(name, String.class, defaultValue);
   }
 
@@ -298,8 +316,8 @@ public class Config
    */
   public <T> T getAttribute(String name, Class<T> type)
   {
-    Params.notNullOrEmpty(name, "Attribute name");
-    Params.notNull(type, "Attribute type");
+    notNullOrEmpty(name, "Attribute name");
+    notNull(type, "Attribute type");
     return getAttribute(name, type, null);
   }
 
@@ -319,8 +337,8 @@ public class Config
    */
   public <T> T getAttribute(String name, Class<T> type, T defaultValue)
   {
-    Params.notNullOrEmpty(name, "Attribute name");
-    Params.notNull(type, "Attribute type");
+    notNullOrEmpty(name, "Attribute name");
+    notNull(type, "Attribute type");
     String value = attributes.get(name);
     return value != null ? converter.asObject(value, type) : defaultValue;
   }
@@ -363,7 +381,7 @@ public class Config
    */
   public boolean hasProperty(String name)
   {
-    Params.notNullOrEmpty(name, "Property name");
+    notNullOrEmpty(name, "Property name");
     return properties.containsKey(name);
   }
 
@@ -376,7 +394,7 @@ public class Config
    */
   public String getProperty(String name)
   {
-    Params.notNullOrEmpty(name, "Property name");
+    notNullOrEmpty(name, "Property name");
     usedProperties.add(name);
     return properties.getProperty(name);
   }
@@ -426,8 +444,8 @@ public class Config
    */
   public <T> T getProperty(String name, Class<T> type, T defaultValue)
   {
-    Params.notNullOrEmpty(name, "Property name");
-    Params.notNull(type, "Property type");
+    notNullOrEmpty(name, "Property name");
+    notNull(type, "Property type");
     String value = getProperty(name);
     if(value != null) {
       return converter.asObject(value, type);
@@ -474,7 +492,7 @@ public class Config
    */
   public boolean hasChild(String name)
   {
-    Params.notNullOrEmpty(name, "Child name");
+    notNullOrEmpty(name, "Child name");
     for(Config child : children) {
       if(child.name.equals(name)) {
         return true;
@@ -492,7 +510,7 @@ public class Config
    */
   public Config getChild(String name)
   {
-    Params.notNullOrEmpty(name, "Child name");
+    notNullOrEmpty(name, "Child name");
     for(Config child : children) {
       if(child.name.equals(name)) {
         return child;
@@ -511,7 +529,7 @@ public class Config
    */
   public Config getChild(int index)
   {
-    Params.range(index, 0, children.size(), "Index");
+    range(index, 0, children.size(), "Index");
     return children.get(index);
   }
 
@@ -524,7 +542,7 @@ public class Config
    */
   public List<Config> findChildren(String... name)
   {
-    Params.notNullOrEmpty(name, "Children names");
+    notNullOrEmpty(name, "Children names");
     List<String> names = Arrays.asList(name);
     List<Config> results = new ArrayList<Config>();
     for(Config child : children) {
@@ -558,7 +576,7 @@ public class Config
    */
   public <T> T getValue(Class<T> type)
   {
-    Params.notNull(type, "Value type");
+    notNull(type, "Value type");
     if(value == null) {
       return null;
     }

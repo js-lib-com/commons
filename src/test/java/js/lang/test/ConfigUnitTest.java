@@ -1,10 +1,12 @@
 package js.lang.test;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -12,14 +14,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+
+import org.junit.Test;
 
 import js.converter.ConverterException;
 import js.lang.Config;
 import js.lang.ConfigBuilder;
-
-import org.junit.Test;
 
 /**
  * Test managed objects configuration.
@@ -49,6 +52,17 @@ public class ConfigUnitTest
     assertEquals(1, config.getChildrenCount());
     assertEquals(child, config.getChild("child"));
     assertEquals(config, child.getParent());
+  }
+
+  @Test
+  public void addChildren()
+  {
+    Config config = new Config("root");
+    List<Config> children = Arrays.asList(new Config("child1"), new Config("child2"));
+    config.addChildren(children);
+    assertThat(config.getChildrenCount(), equalTo(2));
+    assertThat(config.getChild("child1"), equalTo(children.get(0)));
+    assertThat(config.getChild("child2"), equalTo(children.get(1)));
   }
 
   @Test
