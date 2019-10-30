@@ -1,15 +1,19 @@
 package js.util.test;
 
+import static org.hamcrest.Matchers.*;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.ArrayList;
@@ -19,18 +23,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Test;
+
 import js.io.ReaderInputStream;
 import js.lang.BugError;
 import js.lang.NoSuchBeingException;
 import js.util.Classes;
 import js.util.Strings;
 
-import org.junit.Test;
-
 public class ClassesUnitTest
 {
   @Test
-  public void testJavaComplianceResourceName()
+  public void javaComplianceResourceName()
   {
     // Class#getResourceAsStream uses both relative and absolute resource path
     // obviously, if resource path does not start with path separator is relative to class location into package
@@ -153,13 +157,52 @@ public class ClassesUnitTest
   }
 
   @Test
-  public void invokeOnConcreteType() throws Throwable
+  public void getGetter_GET() throws NoSuchMethodException
+  {
+    class Person
+    {
+      @SuppressWarnings("unused")
+      boolean getPhoneNumber()
+      {
+        return false;
+      }
+    }
+    Method method = Classes.getGetter(Person.class, "phone-number");
+    assertThat(method, notNullValue());
+  }
+
+  @Test
+  public void getGetter_IS() throws NoSuchMethodException
+  {
+    class Person
+    {
+      @SuppressWarnings("unused")
+      boolean isPhoneNumber()
+      {
+        return false;
+      }
+    }
+    Method method = Classes.getGetter(Person.class, "phone-number");
+    assertThat(method, notNullValue());
+  }
+
+  @Test(expected = NoSuchMethodException.class)
+  public void getGetter_Exception() throws NoSuchMethodException
+  {
+    class Person
+    {
+    }
+    Classes.getGetter(Person.class, "phone-number");
+  }
+
+  @Test
+  public void invoke_ConcreteType() throws Throwable
   {
     assertEquals(6, Classes.invoke(new InnerClass(), "addIntegers", 1, 2, 3));
   }
 
   @Test
-  public void invokeOnPrimitives() throws Throwable
+  public void invoke_Primitives() throws Throwable
   {
     assertEquals(3, Classes.invoke(new InnerClass(), "addInts", 1, 2));
   }
@@ -173,9 +216,23 @@ public class ClassesUnitTest
    * @throws Throwable rethrows interface invocation.
    */
   @Test
-  public void invokeOnInterface() throws Throwable
+  public void invoke_Interface() throws Throwable
   {
     assertEquals(3, Classes.invoke(new InnerClass(), "addNumbers", new Integer(1), new Integer(2)));
+  }
+
+  @Test
+  public void invoke_InnerClass() throws Exception
+  {
+    InnerClass object = new InnerClass();
+    assertEquals(6, Classes.invoke(object, "addIntegers", 1, 2, 3));
+  }
+
+  @Test
+  public void invoke_Superclass() throws Exception
+  {
+    SuperClass object = new SuperClass();
+    assertEquals(6, Classes.invoke(object, InnerClass.class, "addIntegers", 1, 2, 3));
   }
 
   @Test
@@ -230,7 +287,7 @@ public class ClassesUnitTest
   }
 
   @Test
-  public void listPackageResourcesFromLocalClasses()
+  public void listPackageResources_LocalClasses()
   {
     Collection<String> resources = Classes.listPackageResources("js.util.test", "*.class");
     assertTrue(resources.size() > 0);
@@ -240,14 +297,14 @@ public class ClassesUnitTest
   }
 
   @Test
-  public void listResourcesFromPackageRoot()
+  public void listPackageResources_PackageRoot()
   {
     Collection<String> resources = Classes.listPackageResources("", "*.txt");
     assertEquals(1, resources.size(), 0);
     assertTrue(resources.contains("resource.txt"));
   }
 
-  public void listPackageResourcesFromJar() throws ClassNotFoundException, IOException
+  public void listPackageResources_Jar() throws ClassNotFoundException, IOException
   {
     // TODO: implement or remove this tets case
   }
@@ -298,20 +355,6 @@ public class ClassesUnitTest
     assertNotNull(service);
     assertTrue(service instanceof InnerClass);
     assertEquals("string", Classes.getFieldValue(service, "string"));
-  }
-
-  @Test
-  public void invoke() throws Exception
-  {
-    InnerClass object = new InnerClass();
-    assertEquals(6, Classes.invoke(object, "addIntegers", 1, 2, 3));
-  }
-
-  @Test
-  public void invokeSuperclass() throws Exception
-  {
-    SuperClass object = new SuperClass();
-    assertEquals(6, Classes.invoke(object, InnerClass.class, "addIntegers", 1, 2, 3));
   }
 
   // ------------------------------------------------------

@@ -1,5 +1,7 @@
 package js.util;
 
+import static java.lang.String.format;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -430,7 +432,7 @@ public class Classes
     Method method = findMethod(clazz, setterName);
     Class<?>[] parameterTypes = method.getParameterTypes();
     if(parameterTypes.length != 1) {
-      throw new NoSuchMethodException(String.format("%s#%s", clazz.getName(), setterName));
+      throw new NoSuchMethodException(format("%s#%s", clazz.getName(), setterName));
     }
 
     invoke(object, method, ConverterRegistry.getConverter().asObject((String)value, parameterTypes[0]));
@@ -475,7 +477,7 @@ public class Classes
    * @return value returned by method execution.
    * @throws Exception if invocation fail for whatever reason including method internals.
    */
-  private static Object invoke(Object object, Method method, Object... arguments) throws Exception
+  public static Object invoke(Object object, Method method, Object... arguments) throws Exception
   {
     Throwable cause = null;
     try {
@@ -547,6 +549,48 @@ public class Classes
     }
   }
 
+  /** Prefixes used for getter methods. See {@link #getGetter(Class, String)}. */
+  private static final String[] GETTERS_PREFIX = new String[]
+  {
+      "get", "is"
+  };
+
+  /**
+   * Get class getter method for requested field. This method is an specialization of
+   * {@link #getMethod(Class, String, Class...)}.
+   * <p>
+   * By convention a method getter for boolean values may have <code>is</code> prefix. Unfortunately this convention is
+   * not constrained and there are exception, i.e. use <code>get</code> prefix for booleans. To cope with case this
+   * method tries both prefixes and throws exception only if none found.
+   * <p>
+   * Since getter never has parameters this method does not provide a <code>parameterTypes</code> argument. Also note
+   * that parameter <code>fieldName</code> is what its name says: the name of the field not the method name.
+   * <p>
+   * For convenience field name argument supports dashed case, that is, can contain dash separator. For example
+   * <code>phone-number</code> is considered a valid field name and searched method names are
+   * <code>getPhoneNumber</code> and <code>isPhoneNumber</code>.
+   * 
+   * @param clazz class to return getter from,
+   * @param fieldName field name.
+   * @return getter method.
+   * @throws NoSuchMethodException if there is no getter method for requested field.
+   */
+  public static Method getGetter(Class<?> clazz, String fieldName) throws NoSuchMethodException
+  {
+    for(String prefix : GETTERS_PREFIX) {
+      try {
+        Method method = clazz.getDeclaredMethod(Strings.getMethodAccessor(prefix, fieldName));
+        method.setAccessible(true);
+        return method;
+      }
+      catch(NoSuchMethodException expectable) {}
+      catch(SecurityException e) {
+        throw new BugError(e);
+      }
+    }
+    throw new NoSuchMethodException(format("No getter for |%s#%s|.", clazz.getCanonicalName(), fieldName));
+  }
+
   /**
    * Find method with given name and unknown parameter types. Traverses all declared methods from given class and
    * returns the one with specified name; if none found throws {@link NoSuchMethodException}. If there are overloaded
@@ -576,7 +620,7 @@ public class Classes
       }
     }
 
-    throw new NoSuchMethodException(String.format("%s#%s", clazz.getName(), methodName));
+    throw new NoSuchMethodException(format("%s#%s", clazz.getName(), methodName));
   }
 
   /**
@@ -1296,7 +1340,7 @@ public class Classes
       }
     }
 
-    throw new UnsupportedOperationException(String.format("Bad protocol |%s|.", packageURL));
+    throw new UnsupportedOperationException(format("Bad protocol |%s|.", packageURL));
   }
 
   /**

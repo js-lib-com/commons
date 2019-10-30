@@ -418,7 +418,7 @@ public class Strings
   /**
    * Get Java accessor for a given member name. Returns the given <code>memberName</code> prefixed by
    * <code>prefix</code>. If <code>memberName</code> is dashed case, that is, contains dash character convert it to
-   * camel case. For example getter for <em>email-addresses</em> is <em>getEmailAddresses</em> and for <em>picture</em>
+   * camel case. For example, getter for <em>email-addresses</em> is <em>getEmailAddresses</em> and for <em>picture</em>
    * is <em>getPicture</em>.
    * <p>
    * Accessor <code>prefix</code> is inserted before method name and for flexibility it can be anything. Anyway, ususal
