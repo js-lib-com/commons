@@ -104,7 +104,7 @@ public class I18nUtilsUnitTest
       fail("Locale variant should rise exception.");
     }
     catch(InvocationException e) {
-      assertEquals("Locale variant is null or not empty.", e.getCause().getMessage());
+      assertEquals("Locale variant is not empty.", e.getCause().getMessage());
     }
 
     Locale.Builder builder = new Locale.Builder();
@@ -115,7 +115,7 @@ public class I18nUtilsUnitTest
       fail("Locale script should rise exception.");
     }
     catch(InvocationException e) {
-      assertEquals("Locale script is null or not empty.", e.getCause().getMessage());
+      assertEquals("Locale script is not empty.", e.getCause().getMessage());
     }
 
     builder = new Locale.Builder();
@@ -126,7 +126,7 @@ public class I18nUtilsUnitTest
       fail("Locale extension should rise exception.");
     }
     catch(InvocationException e) {
-      assertEquals("Locale extension is null or not empty.", e.getCause().getMessage());
+      assertEquals("Locale extension is not empty.", e.getCause().getMessage());
     }
   }
 

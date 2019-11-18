@@ -76,8 +76,11 @@ public class Params
    */
   public static void empty(String parameter, String name)
   {
-    if(parameter == null || !parameter.isEmpty()) {
-      throw new IllegalArgumentException(name + " is null or not empty.");
+    if(parameter == null) {
+      throw new IllegalArgumentException(name + " is null.");
+    }
+    if(!parameter.isEmpty()) {
+      throw new IllegalArgumentException(name + " is not empty.");
     }
   }
 
@@ -90,8 +93,11 @@ public class Params
    */
   public static void empty(Collection<?> parameter, String name)
   {
-    if(parameter == null || !parameter.isEmpty()) {
-      throw new IllegalArgumentException(name + " is null or not empty.");
+    if(parameter == null) {
+      throw new IllegalArgumentException(name + " is null empty.");
+    }
+    if(!parameter.isEmpty()) {
+      throw new IllegalArgumentException(name + " is not empty.");
     }
   }
 
@@ -136,8 +142,11 @@ public class Params
    */
   public static void notNullOrEmpty(File parameter, String name) throws IllegalArgumentException
   {
-    if(parameter == null || parameter.getPath().isEmpty()) {
-      throw new IllegalArgumentException(name + " path is null or empty.");
+    if(parameter == null) {
+      throw new IllegalArgumentException(name + " path is null.");
+    }
+    if(parameter.getPath().isEmpty()) {
+      throw new IllegalArgumentException(name + " path is empty.");
     }
   }
 
@@ -150,7 +159,10 @@ public class Params
    */
   public static void notNullOrEmpty(Object[] parameter, String name) throws IllegalArgumentException
   {
-    if(parameter == null || parameter.length == 0) {
+    if(parameter == null) {
+      throw new IllegalArgumentException(name + " parameter is null.");
+    }
+    if(parameter.length == 0) {
       throw new IllegalArgumentException(name + " parameter is empty.");
     }
   }
@@ -210,7 +222,10 @@ public class Params
    */
   public static void isFile(File parameter, String name) throws IllegalArgumentException
   {
-    if(parameter == null || !parameter.exists() || parameter.isDirectory()) {
+    if(parameter == null) {
+      throw new IllegalArgumentException(name + " is null.");
+    }
+    if(!parameter.exists() || parameter.isDirectory()) {
       throw new IllegalArgumentException(format("%s |%s| is missing or is a directory.", name, parameter.getAbsolutePath()));
     }
   }
@@ -226,7 +241,10 @@ public class Params
    */
   public static void isDirectory(File parameter, String name) throws IllegalArgumentException
   {
-    if(parameter == null || !parameter.isDirectory()) {
+    if(parameter == null) {
+      throw new IllegalArgumentException(name + " is null.");
+    }
+    if(!parameter.isDirectory()) {
       throw new IllegalArgumentException(format("%s |%s| is missing or is not a directory.", name, parameter.getAbsolutePath()));
     }
   }
@@ -242,6 +260,12 @@ public class Params
    */
   public static void belongsTo(File directory, File parameter, String name) throws IllegalArgumentException
   {
+    if(directory == null) {
+      throw new IllegalArgumentException(name + " directory is null.");
+    }
+    if(parameter == null) {
+      throw new IllegalArgumentException(name + " file is null.");
+    }
     String dirPath = directory.getAbsolutePath();
     String filePath = parameter.getAbsolutePath();
     if(!filePath.startsWith(dirPath)) {
