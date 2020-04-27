@@ -257,8 +257,7 @@ public class StringsUnitTest
 
     String[] sentences = new String[]
     {
-        "One two three.", "One\ttwo three.", "One\rtwo three.", "One\ntwo three.", "One, two three.", "One: two three.", "One; two three.", "One(two) three.",
-        "One{two} three.", "One[two] three.", "One<two> three."
+        "One two three.", "One\ttwo three.", "One\rtwo three.", "One\ntwo three.", "One, two three.", "One: two three.", "One; two three.", "One(two) three.", "One{two} three.", "One[two] three.", "One<two> three."
     };
     for(String s : sentences) {
       assertEquals("One", Strings.firstWord(s));
@@ -286,6 +285,16 @@ public class StringsUnitTest
 
     assertNull(Strings.trim(null, '('));
     assertNull(Strings.trim(null));
+  }
+
+  @Test
+  public void trim_WhiteSpaceOnly()
+  {
+    assertEquals("", Strings.trim(" "));
+    assertEquals("", Strings.trim(" \t"));
+    assertEquals("", Strings.trim("\r\n"));
+    assertEquals("", Strings.trim("\r\n \r\n"));
+    assertEquals("", Strings.trim("\r\n\t\r\n"));
   }
 
   @Test
@@ -454,8 +463,7 @@ public class StringsUnitTest
   {
     System.setProperty("catalina.base", "/usr/share/tomcat");
     assertEquals("app log: /usr/share/tomcat/logs/app.log", Strings.injectProperties("app log: ${catalina.base}/logs/app.log"));
-    assertEquals("dir: /usr/share/tomcat/logs/ file: /usr/share/tomcat/logs/app.log",
-        Strings.injectProperties("dir: ${catalina.base}/logs/ file: ${catalina.base}/logs/app.log"));
+    assertEquals("dir: /usr/share/tomcat/logs/ file: /usr/share/tomcat/logs/app.log", Strings.injectProperties("dir: ${catalina.base}/logs/ file: ${catalina.base}/logs/app.log"));
     assertEquals("/logs/app.log", Strings.injectProperties("/logs/app.log"));
   }
 

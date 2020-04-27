@@ -343,6 +343,7 @@ public class Strings
   }
 
   /** States enumeration for plain text parser automata. */
+  @Deprecated
   private static enum PlainTextState
   {
     TEXT, START_TAG, END_TAG
@@ -1440,7 +1441,11 @@ public class Strings
     for(; endIndex >= 0; --endIndex) {
       if(!Character.isWhitespace(string.charAt(endIndex))) break;
     }
-    return string.substring(beginIndex, endIndex + 1);
+    ++endIndex;
+    if(endIndex <= beginIndex) {
+      return "";
+    }
+    return string.substring(beginIndex, endIndex);
   }
 
   /**
