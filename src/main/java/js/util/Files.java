@@ -1035,16 +1035,22 @@ public class Files
    * child of given <code>baseDir</code> but directory itself is not removed. As a result <code>baseDir</code> becomes
    * empty, that is, no children. If exception occur base directory state is not defined, that is, some files may be
    * removed and other may still be there.
+   * <p>
+   * For caller convenience this method returns given base directory. This allows to chain this method with
+   * {@link File#delete()} method, like <code>Files.removeFilesHierarchy(dir).delete();</code>.
    * 
-   * @param baseDir base directory to clean-up.
+   * @param baseDir existing, not null, base directory to clean-up.
+   * @return base directory argument for method chaining, mainly for {@link File#delete()}.
+   * @throws IllegalArgumentException if base directory argument is null or is not an existing directory.
    * @throws IOException if remove operation fails.
    */
-  public static void removeFilesHierarchy(File baseDir) throws IOException
+  public static File removeFilesHierarchy(File baseDir) throws IllegalArgumentException, IOException
   {
     Params.notNull(baseDir, "Base directory");
     Params.isDirectory(baseDir, "Base directory");
     log.debug("Remove files hierarchy with base directory |%s|.", baseDir);
     removeDirectory(baseDir);
+    return baseDir;
   }
 
   /**
