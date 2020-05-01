@@ -386,7 +386,7 @@ public class Params
    */
   public static void EQ(String parameter, String expected, String name) throws IllegalArgumentException
   {
-    if(parameter.equals(expected)) {
+    if(!parameter.equals(expected)) {
       throw new IllegalArgumentException(format("%s is not |%s|.", name, expected));
     }
   }
