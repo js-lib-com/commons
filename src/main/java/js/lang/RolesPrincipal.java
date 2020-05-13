@@ -1,20 +1,19 @@
 package js.lang;
 
 import java.security.Principal;
-import java.util.List;
 
 /**
- * Roles based principal. Principal is a mean to identify a subject in a security context. This interface uses roles for
- * identification.
+ * Principal with roles based authorization. Principal is a mean to authenticate a subject in a security context. This
+ * interface extends Java security principal with roles based authorization.
  * 
  * @author Iulian Rotaru
  */
 public interface RolesPrincipal extends Principal
 {
   /**
-   * Get roles principal.
+   * Get principal authorization roles.
    * 
-   * @return roles principal.
+   * @return principal authorization roles.
    */
-  List<String> getRoles();
+  String[] getRoles();
 }
