@@ -76,6 +76,18 @@ public class Classes
   }
 
   /**
+   * Get an object instance identity, guaranteed to be unique on JVM instance. Mostly for debug, it can be used to
+   * discriminate multiple instances of the same class.
+   * 
+   * @param instance object instance.
+   * @return object instance identity.
+   */
+  public static String instance(Object instance)
+  {
+    return Integer.toHexString(System.identityHashCode(instance));
+  }
+
+  /**
    * Load named class using current thread context class loader. Uses current thread context class loader to locate and
    * load requested class. If current thread context class loader is null or fails to find requested class try with this
    * utility class class loader.
@@ -1622,10 +1634,13 @@ public class Classes
   public static <T extends Map<?, ?>> T newMap(Type type)
   {
     Class<?> implementation = MAPS.get(type);
-    if(implementation == null) {
+    if(implementation != null) {
+      return (T)newInstance(implementation);
+    }
+    if(!(type instanceof Class) || !isInstantiable((Class<?>)type)) {
       throw new BugError("No registered implementation for map |%s|.", type);
     }
-    return (T)newInstance(implementation);
+    return (T)newInstance(type);
   }
 
   /**

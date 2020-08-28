@@ -19,24 +19,24 @@ import js.util.Params;
  * iteration processing time but if it takes more that requested period looper thread works again in continuous mode.
  * <p>
  * In any case, looper implementation should consider that thread checks for running state between loops - for this
- * reason blocking read operations are not allowed.
+ * reason blocking not interruptible operations are not allowed.
  * <p>
  * For your convenience here is a sample code.
  * 
  * <pre>
  * class DemoLooper implements Looper, AsyncExceptionListener
  * {
- *   private LooperThread thread;
+ *   private LooperThread looper;
  * 
  *   DemoLooper()
  *   {
- *     tread = new LooperThread(this);
- *     thread.start();
+ *     looper = new LooperThread(this);
+ *     looper.start();
  *   }
  * 
  *   void stop()
  *   {
- *     thread.stop();
+ *     looper.stop();
  *   }
  * 
  *   void loop() throws Exception
@@ -52,9 +52,8 @@ import js.util.Params;
  * </pre>
  * <p>
  * Since looper is running in a separated thread is not possible to catch exceptions. If interested in handling loop
- * iteration exception one should make looper implementing {@link AsyncExceptionListener}. It is also possible to set
- * exception listener after looper thread creation, even after thread start, using
- * {@link #setExceptionListener(AsyncExceptionListener)}.
+ * iteration exception one should make its looper implementing {@link AsyncExceptionListener}. It is not possible to set
+ * exception listener after looper thread start.
  * <p>
  * Looper thread runs till explicit {@link #stop()}. This is true even if a loop execution throws exception; default
  * behavior is to dump stack and continue loop iterations. Anyway, if desirable to break the loop on exception one can
@@ -148,29 +147,48 @@ public class LooperThread implements Runnable
 
   /**
    * Set flag for breaking looper on exception. See class description for a discussion about exception handling.
+   * <p>
+   * This method should be invoked before looper start, see {@link #start()}.
    * 
    * @param breakOnException break on exception flag.
+   * @throws IllegalStateException if attempt to use this setter on a running looper.
    */
-  public void setBreakOnException(boolean breakOnException)
+  public void setBreakOnException(boolean breakOnException) throws IllegalStateException
   {
+    if(running.get()) {
+      throw new IllegalStateException("Cannot alter a running looper state.");
+    }
     this.breakOnException.set(breakOnException);
   }
 
   /**
    * Set asynchronous exception listener to handle loop exceptions. If given argument is null remove current exception
    * lister. See class description for a discussion about exception handling.
+   * <p>
+   * This method should be invoked before looper start, see {@link #start()}.
    * 
    * @param exceptionListener asynchronous exception listener, possible null.
+   * @throws IllegalStateException if attempt to use this setter on a running looper.
    * @see #exceptionListener
    */
-  public synchronized void setExceptionListener(AsyncExceptionListener exceptionListener)
+  public void setExceptionListener(AsyncExceptionListener exceptionListener) throws IllegalStateException
   {
+    if(running.get()) {
+      throw new IllegalStateException("Cannot alter a running looper state.");
+    }
     this.exceptionListener = exceptionListener;
   }
 
-  /** Start the thread and wait for its actual startup. */
+  /**
+   * Start the thread and wait for its actual startup. This method can be called only once per looper instance.
+   * 
+   * @throws IllegalStateException if attempt to start and already running looper.
+   */
   public synchronized void start()
   {
+    if(running.get()) {
+      throw new IllegalStateException("Cannot alter a running looper state.");
+    }
     running.set(true);
     thread.start();
     wait(this, STARTUP_TIMEOUT);
@@ -225,24 +243,19 @@ public class LooperThread implements Runnable
         looper.loop();
       }
       catch(Throwable throwable) {
-        if(exceptionListener != null) {
-          synchronized(this) {
-            if(exceptionListener != null) {
-              exceptionListener.onAsyncException(throwable);
-            }
-          }
+        if(throwable instanceof InterruptedException) {
+          continue;
         }
         else {
-          if(throwable instanceof InterruptedException) {
-            log.debug("Loop execution interrupted. Break looper thread.");
-            break;
+          if(exceptionListener != null) {
+            exceptionListener.onAsyncException(throwable);
           }
           else {
             log.dump("Error on loop execution. Stack trace follows: ", throwable);
           }
-        }
-        if(breakOnException.get()) {
-          break;
+          if(breakOnException.get()) {
+            break;
+          }
         }
         if(loopPeriod == 0) {
           // if period is zero, looper thread is working in continuous mode and is possible that loop exception to
