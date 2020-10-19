@@ -27,4 +27,11 @@ public interface LogProvider extends Configurable
    * @return logger context instance.
    */
   LogContext getLogContext();
+
+  /**
+   * Force all appenders to immediate flush all written messages to target media. This method is only one way; there is
+   * no option to undo its effect. It is intended to be called on container / application destruction to ensure there
+   * are no messages loss.
+   */
+  void forceImmediateFlush();
 }

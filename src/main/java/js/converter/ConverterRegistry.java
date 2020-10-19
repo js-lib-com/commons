@@ -2,6 +2,7 @@ package js.converter;
 
 import java.io.File;
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.sql.Time;
@@ -208,6 +209,7 @@ public final class ConverterRegistry implements Converter
 
     this.converters.put(Class.class, new ClassConverter());
     this.converters.put(File.class, new FileConverter());
+    this.converters.put(URI.class, new UriConverter());
     this.converters.put(URL.class, new UrlConverter());
     this.converters.put(Locale.class, new LocaleConverter());
     this.converters.put(Charset.class, new CharsetConverter());

@@ -207,8 +207,7 @@ public class Types
   /** Java standard classes used to represent numbers, including primitives. */
   private static Type[] NUMERICAL_TYPES = new Type[]
   {
-      int.class, long.class, double.class, Integer.class, Long.class, Double.class, byte.class, short.class, float.class, Byte.class, Short.class, Float.class,
-      Number.class, BigDecimal.class
+      int.class, long.class, double.class, Integer.class, Long.class, Double.class, byte.class, short.class, float.class, Byte.class, Short.class, Float.class, Number.class, BigDecimal.class
   };
 
   /**
@@ -308,6 +307,24 @@ public class Types
   {
     if(t instanceof Class<?>) {
       return ((Class<?>)t).isEnum();
+    }
+    return false;
+  }
+
+  @SuppressWarnings("unchecked")
+  public static boolean isValidEnum(Type t, String name)
+  {
+    if(!(t instanceof Class<?>)) {
+      return false;
+    }
+    final Class<?> c = (Class<?>)t;
+    if(!c.isEnum()) {
+      return false;
+    }
+    for(final Enum<?> e : ((Class<? extends Enum<?>>)c).getEnumConstants()) {
+      if(e.name().equals(name)) {
+        return true;
+      }
     }
     return false;
   }
@@ -569,8 +586,8 @@ public class Types
 
   /**
    * Returns an empty value of requested type. This method returns <code>0</code>, <code>false</code>, empty string,
-   * current date/time, empty collection or empty array if requested type is respectively a number, boolean, string,
-   * date, collection or array. If none of previous returns null.
+   * current date/time, empty collection. empty array or empty map if requested type is respectively a number, boolean,
+   * string, date, collection, array or map. If none of previous returns null.
    * 
    * @param t desired type for empty value.
    * @return empty value.
@@ -595,7 +612,7 @@ public class Types
     if(double.class.equals(t) || Double.class.equals(t)) {
       return (double)0;
     }
-    
+
     if(Types.isBoolean(t)) {
       return Boolean.valueOf(false);
     }
@@ -613,6 +630,9 @@ public class Types
     }
     if(Types.isArray(t)) {
       Array.newInstance(((Class<?>)t).getComponentType(), 0);
+    }
+    if(Types.isMap(t)) {
+      return Classes.newMap(t);
     }
     return null;
   }

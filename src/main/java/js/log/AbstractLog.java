@@ -226,9 +226,10 @@ public abstract class AbstractLog implements Log
     }
 
     for(int i = 0; i < args.length; i++) {
-      // at this point args[i] could be null, condition silently ignored by next branching logic
-      // and this is because all branch tests are null safe
-      // anyway, if add new branch test takes care to be also null safe or test explicitly for args[i] == null
+      // at this point args[i] could be null
+      if(args[i] == null) {
+        continue;
+      }
 
       if(args[i] instanceof Class) {
         args[i] = ((Class<?>)args[i]).getCanonicalName();

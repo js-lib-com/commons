@@ -8,7 +8,8 @@ import js.util.Params;
  * are supported; see {@link LooperThread} for details.
  * <p>
  * In sample code <code>Processor</code> uses a user defined iteration period. It is also possible to run into
- * continuous mode in which case {@link Looper#loop()} should wait for some IO events or explicit sleep.
+ * continuous mode - PERIOD is explicitly set to zero, in which case {@link Looper#loop()} should wait for some IO
+ * events or explicit sleep.
  * 
  * <pre>
  * public class Processor extends AbstractLooper
@@ -26,6 +27,10 @@ import js.util.Params;
  * }
  * </pre>
  * 
+ * <p>
+ * By default, when exception occurs on implementation logic, looper record the event to application logger and continue
+ * running. If is preferable to stop running on exception uses the constructor {@link #AbstractLooper(int, boolean)}.
+ * 
  * @author Iulian Rotaru
  * @version final
  */
@@ -35,24 +40,31 @@ public abstract class AbstractLooper implements ManagedLifeCycle, Looper
   protected final LooperThread thread;
 
   /**
-   * Construct a looper instance operating in <code>continuous</code> modes. {@link Looper#loop()} implementation should
-   * wait for some IO events or explicit sleep to avoid abusing the thread.
-   */
-  protected AbstractLooper()
-  {
-    this.thread = new LooperThread(this);
-  }
-
-  /**
-   * Construct a looper instance operation in <code>periodic</code> mode.
+   * Construct a looper instance with given <code>period</code> and no break on exception. Period argument can be zero,
+   * in which case looper operates in continuous mode. In this mode is implementation responsibility to ensure thread is
+   * not abused.
    * 
-   * @param period loop iteration period, in milliseconds.
+   * @param period loop iteration period, possible 0, in milliseconds.
    * @throws IllegalArgumentException if <code>period</code> argument is not strict positive.
    */
   protected AbstractLooper(int period)
   {
-    Params.strictPositive(period, "Looper period");
-    this.thread = new LooperThread(this, period);
+    this(period, false);
+  }
+
+  /**
+   * Construct a looper instance with given <code>period</code> and <code>no break on exception</code> flag. Period
+   * argument can be zero, in which case looper operates in continuous mode. In this mode is implementation
+   * responsibility to ensure thread is not abused.
+   * 
+   * @param period loop iteration period, possible 0, in milliseconds,
+   * @param breakOnException if true, looper breaks execution when its logic generates exception.
+   * @throws IllegalArgumentException if <code>period</code> argument is not strict positive.
+   */
+  protected AbstractLooper(int period, boolean breakOnException)
+  {
+    Params.positive(period, "Looper period");
+    this.thread = new LooperThread(this, period, breakOnException);
   }
 
   /**

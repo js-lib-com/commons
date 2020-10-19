@@ -1,12 +1,11 @@
 package js.util.test;
 
-import static org.hamcrest.Matchers.*;
-
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -198,13 +197,13 @@ public class ClassesUnitTest
   @Test
   public void invoke_ConcreteType() throws Throwable
   {
-    assertEquals(6, Classes.invoke(new InnerClass(), "addIntegers", 1, 2, 3));
+    assertEquals(6, (int)Classes.invoke(new InnerClass(), "addIntegers", 1, 2, 3));
   }
 
   @Test
   public void invoke_Primitives() throws Throwable
   {
-    assertEquals(3, Classes.invoke(new InnerClass(), "addInts", 1, 2));
+    assertEquals(3, (int)Classes.invoke(new InnerClass(), "addInts", 1, 2));
   }
 
   /**
@@ -218,21 +217,21 @@ public class ClassesUnitTest
   @Test
   public void invoke_Interface() throws Throwable
   {
-    assertEquals(3, Classes.invoke(new InnerClass(), "addNumbers", new Integer(1), new Integer(2)));
+    assertEquals(3, (int)Classes.invoke(new InnerClass(), "addNumbers", new Integer(1), new Integer(2)));
   }
 
   @Test
   public void invoke_InnerClass() throws Exception
   {
     InnerClass object = new InnerClass();
-    assertEquals(6, Classes.invoke(object, "addIntegers", 1, 2, 3));
+    assertEquals(6, (int)Classes.invoke(object, "addIntegers", 1, 2, 3));
   }
 
   @Test
   public void invoke_Superclass() throws Exception
   {
     SuperClass object = new SuperClass();
-    assertEquals(6, Classes.invoke(object, InnerClass.class, "addIntegers", 1, 2, 3));
+    assertEquals(6, (int)Classes.invoke(object, InnerClass.class, "addIntegers", 1, 2, 3));
   }
 
   @Test

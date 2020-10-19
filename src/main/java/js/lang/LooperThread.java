@@ -1,14 +1,13 @@
 package js.lang;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import js.log.Log;
 import js.log.LogFactory;
 import js.util.Params;
 
 /**
- * Thread that executes {@link Looper#loop()} with optional iteration period. Looper thread has convenient methods to
- * start and stop thread execution and supports two iteration modes: <code>continuous</code> and <code>periodic</code>.
+ * Thread that executes {@link Looper#loop()} with configurable iteration period. Looper thread has convenient methods
+ * to start and stop thread execution and supports two iteration modes: <code>continuous</code> and
+ * <code>periodic</code>.
  * <p>
  * In <code>continuous</code> mode looper thread executes loop iterations with processor speed. Looper instance is
  * usually waiting for some IO, takes care itself to sleep for some time or really has much computation to do. It is
@@ -16,12 +15,12 @@ import js.util.Params;
  * <p>
  * To enable <code>periodic</code> mode one should use a constructor that supplies a period value. Looper thread
  * executes internal sleep and invoke iteration with requested period. Implementation takes care to compensate for
- * iteration processing time but if it takes more that requested period looper thread works again in continuous mode.
+ * iteration processing time but if it takes more that requested period, looper thread works again in continuous mode.
  * <p>
  * In any case, looper implementation should consider that thread checks for running state between loops - for this
  * reason blocking not interruptible operations are not allowed.
  * <p>
- * For your convenience here is a sample code.
+ * For your convenience here is an usage sample code.
  * 
  * <pre>
  * class DemoLooper implements Looper, AsyncExceptionListener
@@ -60,7 +59,6 @@ import js.util.Params;
  * use {@link #setBreakOnException(boolean)} to set {@link #breakOnException} flag to true.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class LooperThread implements Runnable
 {
@@ -94,38 +92,31 @@ public class LooperThread implements Runnable
   /** Looper instance to invoke repetitively. */
   private final Looper looper;
 
-  /** Optional loop iteration period in milliseconds. */
-  private final int loopPeriod;
-
-  /** Running state. */
-  private final AtomicBoolean running = new AtomicBoolean();
-
   /** break thread looper on exception, default to false. */
-  private final AtomicBoolean breakOnException = new AtomicBoolean();
+  private final boolean breakOnException;
 
   /** Asynchronous exception listener. */
-  private volatile AsyncExceptionListener exceptionListener;
+  private final AsyncExceptionListener exceptionListener;
+
+  /**
+   * Thread running state used by looper start and stop logic. Since both {@link #start()} and {@link #stop()} methods
+   * are synchronized there is no need to use volatile on this flag.
+   */
+  private boolean running;
+
+  /** Loop iteration period in milliseconds. */
+  private int loopPeriod;
 
   /**
    * Keep track of the previous exception in order to prevent exceptions to occur to often. It is used only in
-   * continuous mode, that is, period is zero.
+   * continuous mode, that is, period is zero. Also, if {@link #breakOnException} flag is true this value is not
+   * relevant.
    */
   private long exceptionTimestamp;
 
   /**
-   * Create looper thread. If looper instance implements {@link AsyncExceptionListener} it is also registered as
-   * exception listener.
-   * 
-   * @param looper looper instance.
-   */
-  public LooperThread(Looper looper)
-  {
-    this(looper, 0);
-  }
-
-  /**
    * Create looper thread with iteration period. Iteration <code>period</code> is expressed in milliseconds and should
-   * be positive; if zero looper thread is configured in continuous mode. If looper instance implements
+   * be positive; if zero, looper thread is configured in continuous mode. If looper instance implements
    * {@link AsyncExceptionListener} it is also registered as exception listener.
    * 
    * @param looper looper instance,
@@ -134,49 +125,36 @@ public class LooperThread implements Runnable
    */
   public LooperThread(Looper looper, int period)
   {
+    this(looper, period, false);
+  }
+
+  public LooperThread(Looper looper, int period, boolean breakOnException)
+  {
     Params.notNull(looper, "Looper reference");
     Params.positive(period, "Loop period");
     this.looper = looper;
     this.loopPeriod = period;
+
     this.thread = new Thread(this, looper.getClass().getName());
     this.thread.setDaemon(true);
+
     if(looper instanceof AsyncExceptionListener) {
       this.exceptionListener = (AsyncExceptionListener)looper;
     }
+    else {
+      this.exceptionListener = null;
+    }
+    this.breakOnException = breakOnException;
   }
 
-  /**
-   * Set flag for breaking looper on exception. See class description for a discussion about exception handling.
-   * <p>
-   * This method should be invoked before looper start, see {@link #start()}.
-   * 
-   * @param breakOnException break on exception flag.
-   * @throws IllegalStateException if attempt to use this setter on a running looper.
-   */
-  public void setBreakOnException(boolean breakOnException) throws IllegalStateException
+  public int getLoopPeriod()
   {
-    if(running.get()) {
-      throw new IllegalStateException("Cannot alter a running looper state.");
-    }
-    this.breakOnException.set(breakOnException);
+    return loopPeriod;
   }
 
-  /**
-   * Set asynchronous exception listener to handle loop exceptions. If given argument is null remove current exception
-   * lister. See class description for a discussion about exception handling.
-   * <p>
-   * This method should be invoked before looper start, see {@link #start()}.
-   * 
-   * @param exceptionListener asynchronous exception listener, possible null.
-   * @throws IllegalStateException if attempt to use this setter on a running looper.
-   * @see #exceptionListener
-   */
-  public void setExceptionListener(AsyncExceptionListener exceptionListener) throws IllegalStateException
+  public void setLoopPeriod(int loopPeriod)
   {
-    if(running.get()) {
-      throw new IllegalStateException("Cannot alter a running looper state.");
-    }
-    this.exceptionListener = exceptionListener;
+    this.loopPeriod = loopPeriod;
   }
 
   /**
@@ -186,10 +164,10 @@ public class LooperThread implements Runnable
    */
   public synchronized void start()
   {
-    if(running.get()) {
+    if(running) {
       throw new IllegalStateException("Cannot alter a running looper state.");
     }
-    running.set(true);
+    running = true;
     thread.start();
     wait(this, STARTUP_TIMEOUT);
   }
@@ -202,7 +180,7 @@ public class LooperThread implements Runnable
    */
   public synchronized void stop()
   {
-    running.set(false);
+    running = false;
     if(thread.isAlive()) {
       thread.interrupt();
       wait(this, STOP_TIMEOUT);
@@ -216,7 +194,7 @@ public class LooperThread implements Runnable
    */
   public boolean isRunning()
   {
-    return running.get();
+    return running;
   }
 
   @Override
@@ -234,7 +212,7 @@ public class LooperThread implements Runnable
     // millisecond for looper thread to sleep till next iteration, in milliseconds
     long sleepingPeriod = 0;
 
-    while(running.get()) {
+    while(running) {
       if(loopPeriod > 0) {
         nextIterationTimestamp = System.currentTimeMillis() + loopPeriod;
       }
@@ -242,21 +220,21 @@ public class LooperThread implements Runnable
       try {
         looper.loop();
       }
-      catch(Throwable throwable) {
+      catch(final Throwable throwable) {
         if(throwable instanceof InterruptedException) {
           continue;
         }
-        else {
-          if(exceptionListener != null) {
-            exceptionListener.onAsyncException(throwable);
-          }
-          else {
-            log.dump("Error on loop execution. Stack trace follows: ", throwable);
-          }
-          if(breakOnException.get()) {
-            break;
-          }
+
+        if(exceptionListener != null) {
+          exceptionListener.onAsyncException(throwable);
         }
+        else {
+          log.dump("Error on loop execution. Stack trace follows: ", throwable);
+        }
+        if(breakOnException) {
+          break;
+        }
+
         if(loopPeriod == 0) {
           // if period is zero, looper thread is working in continuous mode and is possible that loop exception to
           // occur at every iteration
@@ -269,7 +247,7 @@ public class LooperThread implements Runnable
       }
 
       if(loopPeriod > 0) {
-        for(; running.get();) {
+        for(; running;) {
           sleepingPeriod = nextIterationTimestamp - System.currentTimeMillis();
           if(sleepingPeriod <= 0) {
             break;

@@ -7,16 +7,15 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.junit.Test;
 
 import js.lang.AbstractLooper;
 import js.lang.AsyncExceptionListener;
 import js.lang.Looper;
 import js.lang.LooperThread;
 import js.util.Classes;
-
-import org.junit.Test;
 
 public class LooperThreadUnitTest
 {
@@ -30,14 +29,14 @@ public class LooperThreadUnitTest
       public void loop() throws Exception
       {
       }
-    });
+    }, 0);
 
     assertNotNull(Classes.getFieldValue(looper, "looper"));
     assertNotNull(Classes.getFieldValue(looper, "thread"));
     assertFalse(((Thread)Classes.getFieldValue(looper, "thread")).isAlive());
-    assertEquals(0, Classes.getFieldValue(looper, "loopPeriod"));
-    assertFalse(((AtomicBoolean)Classes.getFieldValue(looper, "running")).get());
-    assertFalse(((AtomicBoolean)Classes.getFieldValue(looper, "breakOnException")).get());
+    assertEquals(0, (int)Classes.getFieldValue(looper, "loopPeriod"));
+    assertFalse((Boolean)Classes.getFieldValue(looper, "running"));
+    assertFalse((Boolean)Classes.getFieldValue(looper, "breakOnException"));
     assertNull(Classes.getFieldValue(looper, "exceptionListener"));
   }
 
@@ -63,40 +62,8 @@ public class LooperThreadUnitTest
       }
     }
 
-    LooperThread looper = new LooperThread(new MockLooper());
+    LooperThread looper = new LooperThread(new MockLooper(), 0);
     assertNotNull(Classes.getFieldValue(looper, "exceptionListener"));
-  }
-
-  @Test
-  public void looperThreadSetters()
-  {
-    LooperThread looper = new LooperThread(new Looper()
-    {
-      @Override
-      @Test
-      public void loop() throws Exception
-      {
-      }
-    });
-    assertFalse(((AtomicBoolean)Classes.getFieldValue(looper, "breakOnException")).get());
-    assertNull(Classes.getFieldValue(looper, "exceptionListener"));
-
-    looper.setBreakOnException(true);
-    looper.setExceptionListener(new AsyncExceptionListener()
-    {
-      @Override
-      @Test
-      public void onAsyncException(Throwable throwable)
-      {
-      }
-    });
-    assertTrue(((AtomicBoolean)Classes.getFieldValue(looper, "breakOnException")).get());
-    assertNotNull(Classes.getFieldValue(looper, "exceptionListener"));
-
-    looper.setBreakOnException(false);
-    looper.setExceptionListener(null);
-    assertFalse(((AtomicBoolean)Classes.getFieldValue(looper, "breakOnException")).get());
-    assertNull(Classes.getFieldValue(looper, "exceptionListener"));
   }
 
   @Test
@@ -110,7 +77,7 @@ public class LooperThreadUnitTest
       {
         Thread.sleep(1000);
       }
-    });
+    }, 0);
     long timestamp = System.currentTimeMillis();
     looper.start();
     Thread thread = Classes.getFieldValue(looper, "thread");
@@ -133,7 +100,7 @@ public class LooperThreadUnitTest
       {
         Thread.sleep(1000);
       }
-    });
+    }, 0);
     looper.start();
     Thread.sleep(500);
 
@@ -157,7 +124,7 @@ public class LooperThreadUnitTest
         counter.incrementAndGet();
         Thread.sleep(1);
       }
-    });
+    }, 0);
     thread.start();
     Thread.sleep(100);
     thread.stop();
@@ -220,9 +187,9 @@ public class LooperThreadUnitTest
         counter.incrementAndGet();
         throw new Exception();
       }
-    });
-    assertFalse(((AtomicBoolean)Classes.getFieldValue(looper, "breakOnException")).get());
-    assertEquals(0, Classes.getFieldValue(looper, "loopPeriod"));
+    }, 0);
+    assertFalse((Boolean)Classes.getFieldValue(looper, "breakOnException"));
+    assertEquals(0, (int)Classes.getFieldValue(looper, "loopPeriod"));
     looper.start();
     Thread.sleep(100);
     assertEquals(2, counter.get());
@@ -245,9 +212,8 @@ public class LooperThreadUnitTest
         counter.incrementAndGet();
         throw new Exception();
       }
-    });
-    assertEquals(0, Classes.getFieldValue(looper, "loopPeriod"));
-    looper.setBreakOnException(true);
+    }, 0, true);
+    assertEquals(0, (int)Classes.getFieldValue(looper, "loopPeriod"));
     looper.start();
     Thread.sleep(100);
     assertEquals(1, counter.get());
@@ -257,26 +223,54 @@ public class LooperThreadUnitTest
   public void looperThreadExceptionListener() throws InterruptedException
   {
     final AtomicInteger counter = new AtomicInteger();
-    LooperThread looper = new LooperThread(new Looper()
+
+    class ExceptionalLooper implements Looper, AsyncExceptionListener
     {
       @Override
       public void loop() throws Exception
       {
         throw new IOException();
       }
-    }, 20);
-    looper.setExceptionListener(new AsyncExceptionListener()
-    {
+
       @Override
       public void onAsyncException(Throwable throwable)
       {
         assertTrue(throwable instanceof IOException);
         counter.incrementAndGet();
       }
-    });
+    }
+
+    LooperThread looper = new LooperThread(new ExceptionalLooper(), 0);
     looper.start();
     Thread.sleep(100);
-    assertTrue(counter.get() >= 4 && counter.get() <= 6);
+    assertTrue(counter.get() >= 1 && counter.get() <= 6);
+  }
+
+  @Test
+  public void looperThreadExceptionListener_BreakOnException() throws InterruptedException
+  {
+    final AtomicInteger counter = new AtomicInteger();
+
+    class ExceptionalLooper implements Looper, AsyncExceptionListener
+    {
+      @Override
+      public void loop() throws Exception
+      {
+        throw new IOException();
+      }
+
+      @Override
+      public void onAsyncException(Throwable throwable)
+      {
+        assertTrue(throwable instanceof IOException);
+        counter.incrementAndGet();
+      }
+    }
+
+    LooperThread looper = new LooperThread(new ExceptionalLooper(), 0, true);
+    looper.start();
+    Thread.sleep(100);
+    assertEquals(1, counter.get());
   }
 
   @Test
@@ -285,11 +279,6 @@ public class LooperThreadUnitTest
     class MockLooper extends AbstractLooper
     {
       int loopProbe;
-
-      public MockLooper()
-      {
-        super();
-      }
 
       public MockLooper(int period)
       {
@@ -309,7 +298,7 @@ public class LooperThreadUnitTest
       }
     }
 
-    MockLooper looper = new MockLooper();
+    MockLooper looper = new MockLooper(0);
     looper.postConstruct();
     looper.join();
     assertEquals(1, looper.loopProbe);

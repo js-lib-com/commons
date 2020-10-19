@@ -18,6 +18,8 @@ import java.util.Set;
 import js.converter.Converter;
 import js.converter.ConverterException;
 import js.converter.ConverterRegistry;
+import js.log.Log;
+import js.log.LogFactory;
 
 /**
  * Generic configuration object with XML like structure. A configuration object has a name, value, attributes,
@@ -52,6 +54,8 @@ import js.converter.ConverterRegistry;
  */
 public class Config
 {
+  private static final Log log = LogFactory.getLog(Config.class);
+
   /** Configuration object name. */
   private final String name;
 
@@ -322,9 +326,9 @@ public class Config
   }
 
   /**
-   * Get attribute value converted to requested type or default value if there is no attribute with requested name. If
-   * given default value is null and attribute is not found this method still returns null, that is, the requested
-   * default value.
+   * Get attribute value converted to requested type or default value if there is no attribute with requested name or
+   * attribute value cannot be converted. If given default value is null and attribute value cannot be retrieved this
+   * method still returns null, that is, the requested default value.
    * 
    * @param name attribute name,
    * @param type type to converter attribute value to,
@@ -333,14 +337,24 @@ public class Config
    * @return newly created value object instance or default value.
    * @throws IllegalArgumentException if <code>name</code> argument is null or empty.
    * @throws IllegalArgumentException if <code>type</code> argument is null.
-   * @throws ConverterException if there is no converter registered for value type or value parse fails.
    */
   public <T> T getAttribute(String name, Class<T> type, T defaultValue)
   {
     notNullOrEmpty(name, "Attribute name");
     notNull(type, "Attribute type");
+
     String value = attributes.get(name);
-    return value != null ? converter.asObject(value, type) : defaultValue;
+    if(value == null) {
+      return defaultValue;
+    }
+
+    try {
+      return converter.asObject(value, type);
+    }
+    catch(ConverterException e) {
+      log.error("Cannot convert attribute |%s[@%s]| value |%s| to |%s|. Root cause: %s: %s", this.name, name, value, type, e.getCause().getClass(), e.getCause().getMessage());
+    }
+    return defaultValue;
   }
 
   /**
