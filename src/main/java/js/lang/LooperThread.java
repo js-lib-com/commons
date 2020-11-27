@@ -56,7 +56,7 @@ import js.util.Params;
  * <p>
  * Looper thread runs till explicit {@link #stop()}. This is true even if a loop execution throws exception; default
  * behavior is to dump stack and continue loop iterations. Anyway, if desirable to break the loop on exception one can
- * use {@link #setBreakOnException(boolean)} to set {@link #breakOnException} flag to true.
+ * use {@link #LooperThread(Looper, int, boolean)} constructor to set {@link #breakOnException} flag to true.
  * 
  * @author Iulian Rotaru
  */
