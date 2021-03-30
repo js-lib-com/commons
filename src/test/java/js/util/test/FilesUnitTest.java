@@ -9,11 +9,11 @@ import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -273,7 +273,7 @@ public class FilesUnitTest
   }
 
   @Test
-  public void testRemoveFilesHierarchy() throws FileNotFoundException, IOException
+  public void testRemoveFilesHierarchy() throws IOException
   {
     File baseDir = new File("fixture/files-hierarchy");
     baseDir.mkdir(); // ensure directory is create
@@ -302,6 +302,20 @@ public class FilesUnitTest
     assertEquals(0, baseDir.list().length);
   }
 
+  @Test
+  public void testRemoveFilesHierarchy_NotWrittenFile() throws IOException {
+    File baseDir = new File("fixture/files-hierarchy");
+    baseDir.mkdir(); // ensure directory is create
+    assertEquals(0, baseDir.list().length);
+
+    File file = new File(baseDir, "file");
+    Writer writer = new FileWriter(file);
+    writer.close();
+
+    Files.removeFilesHierarchy(baseDir);
+    assertEquals(0, baseDir.list().length);
+  }
+  
   @Test
   public void testCopyReaderWriter() throws IOException
   {
