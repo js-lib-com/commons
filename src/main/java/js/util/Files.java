@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -901,6 +902,38 @@ public class Files
     File file = File.createTempFile(TMP_FILE_PREFIX, TMP_FILE_EXTENSION);
     file.deleteOnExit();
     return file;
+  }
+
+  /**
+   * Detect if a file is XML with a given root element. Returns true if file exists and has <code>xml</code> extension.
+   * If optional roots parameter is provided check also the file root element and return false if no match.
+   * 
+   * @param file file to test,
+   * @param roots optional roots elements to match.
+   * @return true if file is XML and optional roots match.
+   * @throws IOException if roots parameter is provided and file read fails.
+   * @since 1.3
+   */
+  public static boolean isXML(File file, String... roots) throws IOException
+  {
+    if(!file.exists() || !file.getName().endsWith(".xml")) {
+      return false;
+    }
+    if(roots.length == 0) {
+      return true;
+    }
+    try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+      String line = reader.readLine();
+      if(line.startsWith("<?")) {
+        line = reader.readLine();
+      }
+      for(String root : roots) {
+        if(line.startsWith(Strings.concat('<', root, '>'))) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   /** Standard extensions for image files. Used by {@link #isImage(File)}. */
