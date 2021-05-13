@@ -5,6 +5,7 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -162,10 +163,10 @@ public final class ConverterRegistry implements Converter
   }
 
   /** Concrete converters map. */
-  private Map<Class<?>, Converter> converters = new IdentityHashMap<Class<?>, Converter>();
+  private Map<Class<?>, Converter> converters = new IdentityHashMap<>();
 
   /** Abstract converters map. This map is used when value type is not concrete, that is, is interface or abstract. */
-  private Map<Class<?>, Converter> abstractConverters = new IdentityHashMap<Class<?>, Converter>();
+  private Map<Class<?>, Converter> abstractConverters = new IdentityHashMap<>();
 
   /**
    * Converters used for enumerations. There is no limit on user defined enumeration types and cannot simply map them
@@ -214,6 +215,7 @@ public final class ConverterRegistry implements Converter
     this.converters.put(Locale.class, new LocaleConverter());
     this.converters.put(Charset.class, new CharsetConverter());
 
+    this.abstractConverters.put(Path.class, new PathConverter());
     this.abstractConverters.put(TimeZone.class, new TimeZoneConverter());
 
     // register all converter providers found on run-time
