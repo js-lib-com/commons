@@ -39,6 +39,7 @@ import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.Stack;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -1511,6 +1512,7 @@ public class Classes
     m.put(Vector.class, Vector.class);
     m.put(Set.class, HashSet.class);
     m.put(HashSet.class, HashSet.class);
+    m.put(SortedSet.class, TreeSet.class);
     m.put(TreeSet.class, TreeSet.class);
     COLLECTIONS = Collections.unmodifiableMap(m);
   }
