@@ -44,7 +44,6 @@ import js.log.LogFactory;
  * sub-classing description.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class Strings
 {
@@ -54,28 +53,6 @@ public class Strings
   /** Prevent default constructor synthesis but allow sub-classing. */
   protected Strings()
   {
-  }
-
-  /**
-   * Convert word to camel case. This method convert a single word to English convention title case, that is, first
-   * letter to upper case and the rest to lower. Note that this method may have not reasonable results if more words,
-   * perhaps space separated, are given; it simply convert all but the first to lower case. Use
-   * {@link #toMemberName(String)} or {@link #toTitleCase(String)} if need to convert more words.
-   * <p>
-   * Returns null if word argument is null and empty if empty.
-   * 
-   * @param word word to convert.
-   * @return given word as title case, null or empty string.
-   */
-  public static String toCamelCase(String word)
-  {
-    if(word == null) {
-      return null;
-    }
-    if(word.isEmpty()) {
-      return "";
-    }
-    return Character.toUpperCase(word.charAt(0)) + word.substring(1).toLowerCase();
   }
 
   /**
@@ -94,11 +71,14 @@ public class Strings
     if(string.isEmpty()) {
       return "";
     }
-    List<String> words = Strings.split(string, '-', '_', ' ', '/', '\\');
-    StringBuilder title = new StringBuilder(toCamelCase(words.get(0)));
-    for(int i = 1; i < words.size(); ++i) {
-      title.append(' ');
-      title.append(toCamelCase(words.get(i)));
+
+    StringBuilder title = new StringBuilder();
+    int index = 0;
+    for(String word : split(string, '-', '_', ' ', '/', '\\')) {
+      if(index++ > 0) {
+        title.append(' ');
+      }
+      title.append(Character.toUpperCase(word.charAt(0)) + word.substring(1).toLowerCase());
     }
     return title.toString();
   }
@@ -144,10 +124,36 @@ public class Strings
     return sb.toString();
   }
 
-  @Deprecated
-  public static String toMemberName(String dashedName)
+  /**
+   * Convert words separated by dash, underscore, space, slash and backslash to Java member name. Returns null or empty
+   * string if given <code>string</code> parameter is null, respective empty.
+   * 
+   * @param string string containing words to convert.
+   * @return <code>string</code> converted to title case, null or empty.
+   */
+  public static String toMemberName(String string)
   {
-    return dashedToMemberName(dashedName);
+    if(string == null) {
+      return null;
+    }
+    if(string.isEmpty()) {
+      return "";
+    }
+
+    StringBuilder sb = new StringBuilder();
+
+    boolean first = true;
+    for(String word : split(string, '-', '_', ' ', '/', '\\')) {
+      if(first) {
+        first = false;
+        sb.append(word);
+        continue;
+      }
+
+      sb.append(Character.toUpperCase(word.charAt(0)));
+      sb.append(word.substring(1).toLowerCase());
+    }
+    return sb.toString();
   }
 
   /**
