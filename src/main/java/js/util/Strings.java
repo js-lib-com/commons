@@ -84,49 +84,10 @@ public class Strings
   }
 
   /**
-   * Convert dashed name to Java member name. A dashed name contains only lower case and words are separated by dash
-   * ('-'). By convention dashed names are used by HTML and CSS.
-   * <p>
-   * Note that first character of returned member name is lower case, e.g. <code>this-is-a-string</code> is converted to
-   * <code>thisIsAString</code>.
-   * <p>
-   * Returns null if words argument is null and empty if empty.
-   * 
-   * @param dashedName dashed name to convert.
-   * @return camel case member name.
-   */
-  public static String dashedToMemberName(String dashedName)
-  {
-    if(dashedName == null) {
-      return null;
-    }
-    if(dashedName.isEmpty()) {
-      return "";
-    }
-
-    String[] words = dashedName.split("-");
-    StringBuilder sb = new StringBuilder();
-
-    boolean first = true;
-    for(String word : words) {
-      if(word.isEmpty()) {
-        continue;
-      }
-      if(first) {
-        first = false;
-        sb.append(word);
-        continue;
-      }
-
-      sb.append(Character.toUpperCase(word.charAt(0)));
-      sb.append(word.substring(1));
-    }
-    return sb.toString();
-  }
-
-  /**
-   * Convert words separated by dash, underscore, space, slash and backslash to Java member name. Returns null or empty
-   * string if given <code>string</code> parameter is null, respective empty.
+   * Convert words separated by dash, space, slash and backslash to Java member name. First word is left as it is but
+   * the next ones are converted to title case, that is, first character to upper case and the rest to lower. Since Java
+   * member name can contain underscore it is not considered as word separator. Returns null or empty string if given
+   * <code>string</code> parameter is null, respective empty.
    * 
    * @param string string containing words to convert.
    * @return <code>string</code> converted to title case, null or empty.
@@ -143,7 +104,7 @@ public class Strings
     StringBuilder sb = new StringBuilder();
 
     boolean first = true;
-    for(String word : split(string, '-', '_', ' ', '/', '\\')) {
+    for(String word : split(string, '-', ' ', '/', '\\')) {
       if(first) {
         first = false;
         sb.append(word);

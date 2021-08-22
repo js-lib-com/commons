@@ -39,14 +39,16 @@ public class StringsUnitTest
   }
 
   @Test
-  public void dashedToMemberName()
+  public void toMemberName()
   {
-    assertEquals("thisIsAString", Strings.dashedToMemberName("this-is-a-string"));
-    assertEquals("thisIsAString", Strings.dashedToMemberName("this-is--a-string"));
-    assertEquals("thisIsAString", Strings.dashedToMemberName("thisIsAString"));
-    assertEquals("upload", Strings.dashedToMemberName("upload"));
-    assertTrue(Strings.dashedToMemberName("").isEmpty());
-    assertNull(Strings.dashedToMemberName(null));
+    assertEquals("thisIsAString", Strings.toMemberName("this-is-a-string"));
+    assertEquals("ThisIsAString", Strings.toMemberName("This-is-a-string"));
+    assertEquals("thisIsAString", Strings.toMemberName("this-is--a-string"));
+    assertEquals("thisIsAString", Strings.toMemberName("thisIsAString"));
+    assertEquals("this_is_a_string", Strings.toMemberName("this_is_a_string"));
+    assertEquals("upload", Strings.toMemberName("upload"));
+    assertTrue(Strings.toMemberName("").isEmpty());
+    assertNull(Strings.toMemberName(null));
   }
 
   @Test
