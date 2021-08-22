@@ -8,6 +8,10 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.IdentityHashMap;
 import java.util.Locale;
@@ -207,6 +211,10 @@ public final class ConverterRegistry implements Converter
     this.converters.put(java.sql.Date.class, datesConverter);
     this.converters.put(Time.class, datesConverter);
     this.converters.put(Timestamp.class, datesConverter);
+    this.converters.put(LocalDate.class, datesConverter);
+    this.converters.put(LocalTime.class, datesConverter);
+    this.converters.put(LocalDateTime.class, datesConverter);
+    this.converters.put(ZonedDateTime.class, datesConverter);
 
     this.converters.put(Class.class, new ClassConverter());
     this.converters.put(File.class, new FileConverter());

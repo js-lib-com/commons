@@ -5,8 +5,15 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 import js.lang.BugError;
@@ -22,13 +29,16 @@ final class DatesConverter implements Converter {
 	// current conversion format doesn't cope with milliseconds that are simply ignored on parse and don't included in formated
 	// string; client MAY include milliseconds when sent dates as JSON string but MUST not expect them when receive
 	// the rationale of this decision lies on browser difference when implementing milliseconds:
-	// WebKit and Presto doesn't use milliseconds while Trident and Gecko does
+	// at the time this are writing WebKit and Presto doesn't use milliseconds while Trident and Gecko does
 
-	/**
-	 * ISO8601 date/time formatter without time zone used for parsing. Uses thread local storage because Java date formatters
-	 * are not thread safe.
-	 */
-	private static ThreadLocal<DateFormat> dateParser = new ThreadLocal<DateFormat>();
+  
+    private static final List<String> PATTERNS = new ArrayList<>();
+    static {
+      // ISO8601 date/time format
+      PATTERNS.add("yyyy-MM-dd'T'HH:mm:ss");
+      // LocalDateTime usual format
+      PATTERNS.add("yyyy-MM-dd HH:mm:ss");
+    }
 
 	/** Package default constructor. */
 	DatesConverter() {
@@ -53,21 +63,20 @@ final class DatesConverter implements Converter {
 			return null;
 		}
 
-		// simple date format is not thread safe; on the other hand http request threads are reused
-		// so seems like a good idea to avoid parser instance creation and reuse it on a per thread basis
-		// excerpt from Java api-doc:
-		// Date formats are not synchronized. It is recommended to create separate format instances for each thread.
-		DateFormat df = dateParser.get();
-		if (df == null) {
-			df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-			df.setTimeZone(TimeZone.getTimeZone("UTC"));
-			dateParser.set(df);
-		}
+		Date date = null;
+        ParsePosition parsePosition = null;
+		for(String pattern: PATTERNS) {
+		  DateFormat df = new SimpleDateFormat(pattern);
+		  df.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-		ParsePosition parsePosition = new ParsePosition(0);
-		Date date = df.parse(string, parsePosition);
+		  parsePosition = new ParsePosition(0);
+		  date = df.parse(string, parsePosition);
+		  if(date != null) {
+		    break;
+		  }
+		}
 		if (date == null) {
-			throw new ConverterException("Cannot parse ISO8601 date from |%s| at position |%d|.", string, parsePosition.getErrorIndex());
+			throw new ConverterException("Cannot parse date from |%s| at position |%d|.", string, parsePosition.getErrorIndex());
 		}
 
 		Calendar calendar = Calendar.getInstance();
@@ -75,10 +84,24 @@ final class DatesConverter implements Converter {
 		calendar.set(Calendar.MILLISECOND, 0);
 		long time = calendar.getTimeInMillis();
 
-		if (valueType == Date.class) {
-			return (T) new Date(time);
-		}
-		if (valueType == java.sql.Date.class) {
+        if (valueType == Date.class) {
+          return (T) new Date(time);
+        }
+        
+        if (valueType == LocalDate.class) {
+          return (T) date.toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
+        }
+        if (valueType == LocalTime.class) {
+          return (T) date.toInstant().atZone(ZoneId.of("UTC")).toLocalTime();
+        }
+        if (valueType == LocalDateTime.class) {
+          return (T) date.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime();
+        }
+        if (valueType == ZonedDateTime.class) {
+          return (T) ZonedDateTime.ofInstant(date.toInstant(), ZoneId.of("UTC"));
+        }
+
+        if (valueType == java.sql.Date.class) {
 			return (T) new java.sql.Date(time);
 		}
 		if (valueType == Time.class) {
