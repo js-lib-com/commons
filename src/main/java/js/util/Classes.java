@@ -1431,7 +1431,7 @@ public class Classes
    * @throws InvocationException with target exception if constructor fails on its execution.
    */
   @SuppressWarnings("unchecked")
-  public static <T> T newInstance(Class<T> clazz, Object... arguments) throws BugError, NoSuchBeingException, BugError
+  public static <T> T newInstance(Class<T> clazz, Object... arguments) throws BugError, NoSuchBeingException, InvocationException
   {
     if(clazz.isInterface()) {
       throw new BugError("Attempt to create new instance for interface |%s|.", clazz);
@@ -1483,6 +1483,45 @@ public class Classes
     }
     catch(InvocationTargetException e) {
       throw new InvocationException(e);
+    }
+  }
+
+  public static <E extends Exception> E newException(Class<E> exception, String format, Object... formatArguments)
+  {
+    Object[] arguments = new Object[]
+    {
+        format, formatArguments
+    };
+    Constructor<E> constructor = null;
+    try {
+      constructor = exception.getConstructor(new Class[]
+      {
+          String.class, Object[].class
+      });
+    }
+    catch(NoSuchMethodException ununsed) {
+      arguments = new Object[]
+      {
+          String.format(format, formatArguments)
+      };
+      try {
+        constructor = exception.getConstructor(new Class[]
+        {
+            String.class
+        });
+      }
+      catch(NoSuchMethodException e) {
+        throw missingConstructorException(exception, formatArguments);
+      }
+    }
+    assert constructor != null;
+
+    try {
+      constructor.setAccessible(true);
+      return constructor.newInstance(arguments);
+    }
+    catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+      throw new BugError(e);
     }
   }
 
