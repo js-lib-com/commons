@@ -5,6 +5,7 @@ import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
@@ -113,7 +114,13 @@ public class Types
     }
 
     Class<?> clazz = typeToClass(t);
+    if(clazz == null) {
+      return false;
+    }
     Class<?> classToMatch = typeToClass(typeToMatch);
+    if(classToMatch == null) {
+      return false;
+    }
 
     if(clazz.isPrimitive()) {
       return BOXING_MAP.get(clazz) == classToMatch;
@@ -648,6 +655,10 @@ public class Types
   {
     if(t instanceof Class<?>) {
       return (Class<?>)t;
+    }
+    if(t instanceof TypeVariable) {
+      return null;
+      // t = ((TypeVariable)t).getBounds()[0];
     }
     if(t instanceof ParameterizedType) {
       return (Class<?>)((ParameterizedType)t).getRawType();
