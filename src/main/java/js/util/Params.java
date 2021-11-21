@@ -3,6 +3,7 @@ package js.util;
 import static java.lang.String.format;
 
 import java.io.File;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Map;
@@ -194,6 +195,59 @@ public class Params
   {
     if(parameter.size() != size) {
       throw new IllegalArgumentException(format("%s size is not %d.", name, size));
+    }
+  }
+
+  /**
+   * Check if type is not null and is an interface. Throws illegal argument is given type argument is not an interface.
+   * 
+   * @param type type to test,
+   * @param name the name of invocation parameter.
+   * @throws IllegalArgumentException if type is null or is not an interface.
+   */
+  public static void isInterface(Class<?> type, String name)
+  {
+    if(type == null) {
+      throw new IllegalArgumentException(format("%s is null.", name));
+    }
+    if(!type.isInterface()) {
+      throw new IllegalArgumentException(format("%s |%s| is not an interface.", name, type.getCanonicalName()));
+    }
+  }
+
+  /**
+   * Check if type is not null and is not an interface. Throws illegal argument is given type argument is an interface.
+   * 
+   * @param type type to test,
+   * @param name the name of invocation parameter.
+   * @throws IllegalArgumentException if type is null or is an interface.
+   */
+  public static void isNotInterface(Class<?> type, String name)
+  {
+    if(type == null) {
+      throw new IllegalArgumentException(format("%s is null.", name));
+    }
+    if(type.isInterface()) {
+      throw new IllegalArgumentException(format("%s |%s| is an interface.", name, type.getCanonicalName()));
+    }
+  }
+
+  /**
+   * Check if type is not null and it can be used for instances creation. Throws illegal argument is given type argument
+   * is not usable for instances creation. This predicate consider a type instantiable if is not an interface or an
+   * abstract class.
+   * 
+   * @param type type to test,
+   * @param name the name of invocation parameter.
+   * @throws IllegalArgumentException if type is null or is not usable for instances creation.
+   */
+  public static void isInstantiable(Class<?> type, String name)
+  {
+    if(type == null) {
+      throw new IllegalArgumentException(format("%s is null.", name));
+    }
+    if(type.isInterface() || Modifier.isAbstract(type.getModifiers())) {
+      throw new IllegalArgumentException(format("%s |%s| is not instantiable.", name, type.getCanonicalName()));
     }
   }
 
