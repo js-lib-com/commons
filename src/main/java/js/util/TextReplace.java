@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-import js.util.Files;
-
 public class TextReplace {
 	private final List<String> excludes = new ArrayList<>();
 	private Predicate<File> filter = file -> true;

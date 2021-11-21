@@ -20,7 +20,6 @@ import java.util.ServiceLoader;
 import java.util.TimeZone;
 
 import js.lang.BugError;
-import js.lang.InvocationException;
 import js.lang.NoSuchBeingException;
 import js.log.Log;
 import js.log.LogFactory;
@@ -247,7 +246,6 @@ public final class ConverterRegistry implements Converter
    * @param converterClass specialized converter class.
    * @throws BugError if converter class is not instantiable.
    * @throws NoSuchBeingException if converter class has no default constructor.
-   * @throws InvocationException with target exception if converter class construction fails on its execution.
    */
   public void registerConverter(Class<?> valueType, Class<? extends Converter> converterClass)
   {
