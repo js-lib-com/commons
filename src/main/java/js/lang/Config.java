@@ -20,6 +20,7 @@ import js.converter.ConverterException;
 import js.converter.ConverterRegistry;
 import js.log.Log;
 import js.log.LogFactory;
+import js.util.Classes;
 
 /**
  * Generic configuration object with XML like structure. A configuration object has a name, value, attributes,
@@ -322,7 +323,7 @@ public class Config
   {
     notNullOrEmpty(name, "Attribute name");
     notNull(type, "Attribute type");
-    return getAttribute(name, type, null);
+    return getAttribute(name, type, (T)null);
   }
 
   /**
@@ -355,6 +356,26 @@ public class Config
       log.error("Cannot convert attribute |%s[@%s]| value |%s| to |%s|. Root cause: %s: %s", this.name, name, value, type, e.getCause().getClass(), e.getCause().getMessage());
     }
     return defaultValue;
+  }
+
+  public <T, E extends Exception> T getAttribute(String name, Class<T> type, T defaultValue, Class<E> exception) throws E
+  {
+    notNullOrEmpty(name, "Attribute name");
+    notNull(type, "Attribute type");
+
+    String value = attributes.get(name);
+    if(value == null) {
+      return defaultValue;
+    }
+
+    try {
+      return converter.asObject(value, type);
+    }
+    catch(ConverterException e) {
+      String message = String.format("Cannot convert attribute |%s[@%s]| value |%s| to |%s|. Root cause: %s: %s", this.name, name, value, type, e.getCause().getClass(), e.getCause().getMessage());
+      log.error(message);
+      throw Classes.newException(exception, message);
+    }
   }
 
   /**
