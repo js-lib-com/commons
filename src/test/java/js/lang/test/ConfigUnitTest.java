@@ -136,6 +136,19 @@ public class ConfigUnitTest
   }
 
   @Test
+  public void testAttributeVariableValue() throws Exception
+  {
+    System.setProperty("section.name", "Section Name");
+    Config config = getConfig("<?xml version='1.0' ?>" + //
+        "<config>" + //
+        "   <section name='${section.name}' />" + //
+        "</config>");
+
+    Config section = config.getChild("section");
+    assertEquals("Section Name", section.getAttribute("name"));
+  }
+
+  @Test
   public void testHasAttribute()
   {
     Config config = new Config("config");

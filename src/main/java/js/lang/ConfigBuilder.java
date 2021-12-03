@@ -18,6 +18,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
+import js.util.Strings;
+
 /**
  * Configuration object builder. Create configuration object loaded from various sources.
  * <p>
@@ -93,8 +95,7 @@ public class ConfigBuilder
     this.properties = properties;
   }
 
-  /** Protected default constructor for sub-classing. */
-  protected ConfigBuilder()
+  public ConfigBuilder()
   {
   }
 
@@ -174,7 +175,8 @@ public class ConfigBuilder
         stack.push(config);
 
         for(int i = 0; i < attributes.getLength(); ++i) {
-          config.setAttribute(attributes.getQName(i), attributes.getValue(i));
+          final String name = attributes.getQName(i);
+          config.setAttribute(name, value(attributes, name));
         }
       }
     }
@@ -215,9 +217,42 @@ public class ConfigBuilder
     {
       String value = attributes.getValue(attributeName);
       if(value == null) {
-        throw new SAXException(new ConfigException("Missing attribute <%s>.", attributeName));
+        throw new SAXException(new ConfigException("Missing attribute |%s|.", attributeName));
       }
-      return value;
+
+      String variableName = getVariableName(value);
+      if(variableName == null) {
+        return value;
+      }
+
+      String variableValue = System.getProperty(variableName);
+      if(variableValue == null) {
+        throw new SAXException(new ConfigException("Missing system property |%s| requested by attribute |%s|.", variableName, attributeName));
+      }
+      return value.replace(Strings.concat("${", variableName, '}'), variableValue);
     }
+  }
+
+  /**
+   * Get variable name from string value or null if value does not contain a variable. Variable uses standard dollar
+   * syntax, that is, <code>${variable.name}</code>. This method returns variable name. If given string value is not a
+   * variable returns null.
+   * 
+   * @param value string value, not null.
+   * @return variable name or null is none found.
+   * @throws SAXException if variable name syntax is wrong.
+   * @throws NullPointerException if <code>value</code> argument is null.
+   */
+  private static String getVariableName(String value) throws SAXException
+  {
+    int variableStartIndex = value.indexOf("${");
+    if(variableStartIndex == -1) {
+      return null;
+    }
+    int variableEndIndex = value.indexOf('}', variableStartIndex);
+    if(variableEndIndex == -1) {
+      throw new SAXException(String.format("Bad variable value |%s|. Missing closing mark.", value));
+    }
+    return value.substring(variableStartIndex + 2, variableEndIndex);
   }
 }
