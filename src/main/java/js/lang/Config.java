@@ -8,12 +8,14 @@ import static js.util.Params.range;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import js.converter.Converter;
 import js.converter.ConverterException;
@@ -69,8 +71,8 @@ public class Config
   /** Children list, possible empty. Children list is usually empty if value exists but is not mandatory. */
   private final List<Config> children = new ArrayList<Config>();
 
-  /** Optional attributes list, possible empty. An attribute is a name/value string pair. */
-  private final Map<String, String> attributes = new HashMap<String, String>();
+  /** Optional attributes list, possible empty. An attribute is a name/value string pair. Attributes order is preserved. */
+  private final Map<String, String> attributes = new LinkedHashMap<String, String>();
 
   /** Optional properties, possible empty. Properties are usually empty if value exists but is not mandatory. */
   private Properties properties = new Properties();
@@ -376,6 +378,16 @@ public class Config
       log.error(message);
       throw Classes.newException(exception, message);
     }
+  }
+
+  public void attributes(Consumer<String> consumer)
+  {
+    attributes.keySet().forEach(key -> consumer.accept(key));
+  }
+
+  public void attributes(BiConsumer<String, String> consumer)
+  {
+    attributes.entrySet().forEach(entry -> consumer.accept(entry.getKey(), entry.getValue()));
   }
 
   /**
