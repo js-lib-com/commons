@@ -44,6 +44,8 @@ import java.util.Stack;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -1542,9 +1544,9 @@ public class Classes
   }
 
   /** Default implementations for collection interfaces. */
-  private static Map<Class<?>, Class<?>> COLLECTIONS = new HashMap<Class<?>, Class<?>>();
+  private static Map<Class<?>, Class<?>> COLLECTIONS;
   static {
-    Map<Class<?>, Class<?>> m = new HashMap<Class<?>, Class<?>>();
+    Map<Class<?>, Class<?>> m = new HashMap<>();
     m.put(Collection.class, Vector.class);
     m.put(List.class, ArrayList.class);
     m.put(ArrayList.class, ArrayList.class);
@@ -1553,6 +1555,7 @@ public class Classes
     m.put(HashSet.class, HashSet.class);
     m.put(SortedSet.class, TreeSet.class);
     m.put(TreeSet.class, TreeSet.class);
+    m.put(BlockingQueue.class, LinkedBlockingQueue.class);
     COLLECTIONS = Collections.unmodifiableMap(m);
   }
 
@@ -1569,9 +1572,9 @@ public class Classes
   }
 
   /** Default implementations for list interfaces. */
-  private static Map<Class<?>, Class<?>> LISTS = new HashMap<Class<?>, Class<?>>();
+  private static Map<Class<?>, Class<?>> LISTS;
   static {
-    Map<Class<?>, Class<?>> m = new HashMap<Class<?>, Class<?>>();
+    Map<Class<?>, Class<?>> m = new HashMap<>();
     m.put(List.class, ArrayList.class);
     m.put(AbstractList.class, ArrayList.class);
     m.put(ArrayList.class, ArrayList.class);
@@ -1652,9 +1655,9 @@ public class Classes
   }
 
   /** Default implementations for maps interfaces. */
-  private static Map<Class<?>, Class<?>> MAPS = new HashMap<Class<?>, Class<?>>();
+  private static Map<Class<?>, Class<?>> MAPS;
   static {
-    Map<Class<?>, Class<?>> m = new HashMap<Class<?>, Class<?>>();
+    Map<Class<?>, Class<?>> m = new HashMap<>();
     m.put(Map.class, HashMap.class);
     m.put(HashMap.class, HashMap.class);
     m.put(SortedMap.class, TreeMap.class);
