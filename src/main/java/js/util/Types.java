@@ -179,6 +179,10 @@ public class Types
     if(o == null) {
       return false;
     }
+    if(t instanceof ParameterizedType) {
+      ParameterizedType p = (ParameterizedType)t;
+      t = p.getRawType();
+    }
     if(t instanceof Class) {
       Class<?> clazz = (Class<?>)t;
       if(clazz.isPrimitive()) {
