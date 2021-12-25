@@ -1703,13 +1703,13 @@ public class Classes
       return forType(((ParameterizedType)type).getRawType());
     }
 
-    if(!(type instanceof GenericArrayType)) {
-      return null;
+    if(type instanceof GenericArrayType) {
+      Type componentType = ((GenericArrayType)type).getGenericComponentType();
+      Class<?> componentClass = forType(componentType);
+      return componentClass != null ? Array.newInstance(componentClass, 0).getClass() : null;
     }
 
-    Type componentType = ((GenericArrayType)type).getGenericComponentType();
-    Class<?> componentClass = forType(componentType);
-    return componentClass != null ? Array.newInstance(componentClass, 0).getClass() : null;
+    return null;
   }
 
   /**
