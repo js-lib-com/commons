@@ -124,11 +124,11 @@
 	<distributionManagement>
 		<snapshotRepository>
 			<id>js-lib</id>
-			<url>http://maven.js-lib.com/</url>
+			<url>https://maven.js-lib.com/</url>
 		</snapshotRepository>
 		<repository>
 			<id>js-lib</id>
-			<url>http://maven.js-lib.com/</url>
+			<url>https://maven.js-lib.com/</url>
 		</repository>
 	</distributionManagement>
 </project>
