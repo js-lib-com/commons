@@ -70,7 +70,9 @@ public interface Converter {
 	 * @throws IllegalArgumentException if <code>valueType</code> is null.
 	 * @throws ConverterException if value type has no converter registered or string parsing fails.
 	 */
-	<T> T asObject(String string, Class<T> valueType) throws IllegalArgumentException, ConverterException;
+	default <T> T asObject(String string, Class<T> valueType) throws IllegalArgumentException, ConverterException {
+	  throw new UnsupportedOperationException();
+	}
 
 	/**
 	 * Create a string representation for given value type instance. Returns serialized instance or null if <code>object</code>
@@ -89,5 +91,7 @@ public interface Converter {
 	 * @throws ConverterException if value object has not converter registered or if anything goes wrong on serialization
 	 *             process.
 	 */
-	String asString(Object object) throws ConverterException;
+	default String asString(Object object) throws ConverterException {
+	  throw new UnsupportedOperationException();
+	}
 }
