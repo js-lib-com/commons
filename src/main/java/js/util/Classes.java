@@ -1540,7 +1540,7 @@ public class Classes
     for(int i = 0; i < arguments.length; ++i) {
       types[i] = arguments[i].getClass();
     }
-    return new NoSuchBeingException("Missing constructor(%s) for |%s|.", Arrays.toString(types), clazz);
+    return new NoSuchBeingException("Constructor or dependecies not found or fail to execute on %s(%s).", clazz.getCanonicalName(), Arrays.toString(types));
   }
 
   /** Default implementations for collection interfaces. */
