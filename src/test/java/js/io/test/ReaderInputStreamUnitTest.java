@@ -11,12 +11,12 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 
-import js.io.ReaderInputStream;
-import js.util.Strings;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import js.io.ReaderInputStream;
+import js.util.Strings;
 
 public class ReaderInputStreamUnitTest
 {

@@ -55,7 +55,7 @@ public class ParserUnitTest
     assertEquals(0.1234, format.parse("12.34%"));
 
     format = new Percent(new Locale("ro", "RO"));
-    assertEquals(0.1234, format.parse("12,34%"));
+    assertEquals(0.1234, format.parse("12,34 %"));
   }
 
   @Test
@@ -65,7 +65,7 @@ public class ParserUnitTest
     assertEquals(12.34, format.parse("$12.34"));
 
     format = new Currency(new Locale("ro", "RO"));
-    assertEquals(12.34, format.parse("12,34 LEI"));
+    assertEquals(12.34, format.parse("12,34 RON"));
   }
 
   @Test
@@ -126,17 +126,17 @@ public class ParserUnitTest
     assertEquals(getDate(), format.parse("Sunday, March 15, 1964"));
 
     format.setLocale(new Locale("ro", "RO"));
-    assertEquals(getDate(), format.parse("15 martie 1964"));
+    assertEquals(getDate(), format.parse("duminică, 15 martie 1964"));
   }
 
   @Test
   public void parseFullDateTime() throws ParseException
   {
     DateTimeFormat format = new FullDateTime();
-    assertEquals(getDateTime(), format.parse("Sunday, March 15, 1964 2:40:00 PM UTC"));
+    assertEquals(getDateTime(), format.parse("Sunday, March 15, 1964 at 2:40:00 PM Coordinated Universal Time"));
 
     format.setLocale(new Locale("ro", "RO"));
-    assertEquals(getDateTime(), format.parse("15 martie 1964 14:40:00 UTC"));
+    assertEquals(getDateTime(), format.parse("duminică, 15 martie 1964, 14:40:00 Timpul universal coordonat"));
   }
 
   @Test
@@ -170,10 +170,10 @@ public class ParserUnitTest
   public void parseLongDateTime() throws ParseException
   {
     DateTimeFormat format = new LongDateTime();
-    assertEquals(getDateTime(), format.parse("March 15, 1964 2:40:00 PM UTC"));
+    assertEquals(getDateTime(), format.parse("March 15, 1964 at 2:40:00 PM UTC"));
 
     format.setLocale(new Locale("ro", "RO"));
-    assertEquals(getDateTime(), format.parse("15 martie 1964 14:40:00 UTC"));
+    assertEquals(getDateTime(), format.parse("15 martie 1964, 14:40:00 UTC"));
   }
 
   @Test
@@ -193,17 +193,17 @@ public class ParserUnitTest
     assertEquals(getDate(), format.parse("Mar 15, 1964"));
 
     format.setLocale(new Locale("ro", "RO"));
-    assertEquals(getDate(), format.parse("15.03.1964"));
+    assertEquals(getDate(), format.parse("15 mar. 1964"));
   }
 
   @Test
   public void parseMediumDateTime() throws ParseException
   {
     DateTimeFormat format = new MediumDateTime();
-    assertEquals(getDateTime(), format.parse("Mar 15, 1964 2:40:00 PM"));
+    assertEquals(getDateTime(), format.parse("Mar 15, 1964, 2:40:00 PM"));
     
     format.setLocale(new Locale("ro", "RO"));
-    assertEquals(getDateTime(), format.parse("15.03.1964 14:40:00"));
+    assertEquals(getDateTime(), format.parse("15 mar. 1964, 14:40:00"));
   }
 
   @Test
@@ -230,10 +230,10 @@ public class ParserUnitTest
   public void parseShortDateTime() throws ParseException
   {
     DateTimeFormat format = new ShortDateTime();
-    assertEquals(getDateTime(), format.parse("3/15/64 2:40 PM"));
+    assertEquals(getDateTime(), format.parse("3/15/64, 2:40 PM"));
     
     format.setLocale(new Locale("ro", "RO"));
-    assertEquals(getDateTime(), format.parse("15.03.1964 14:40"));
+    assertEquals(getDateTime(), format.parse("15.03.1964, 14:40"));
   }
 
   @Test

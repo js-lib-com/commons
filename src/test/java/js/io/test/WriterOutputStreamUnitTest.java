@@ -1,6 +1,6 @@
 package js.io.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,11 +11,11 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.BufferOverflowException;
 
-import js.io.WriterOutputStream;
-import js.util.Strings;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import js.io.WriterOutputStream;
+import js.util.Strings;
 
 public class WriterOutputStreamUnitTest
 {

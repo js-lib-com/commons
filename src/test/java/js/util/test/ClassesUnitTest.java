@@ -217,7 +217,7 @@ public class ClassesUnitTest
   @Test
   public void invoke_Interface() throws Throwable
   {
-    assertEquals(3, (int)Classes.invoke(new InnerClass(), "addNumbers", new Integer(1), new Integer(2)));
+    assertEquals(3, (int)Classes.invoke(new InnerClass(), "addNumbers", Integer.valueOf(1), Integer.valueOf(2)));
   }
 
   @Test
@@ -371,7 +371,7 @@ public class ClassesUnitTest
   {
   }
 
-  private static interface InnerInterface
+  public static interface InnerInterface
   {
   }
 

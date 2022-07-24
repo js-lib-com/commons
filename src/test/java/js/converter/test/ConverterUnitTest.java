@@ -368,7 +368,7 @@ public class ConverterUnitTest
   {
     String s = "Europe/Bucharest";
     TimeZone timezone = converter.asObject(s, TimeZone.class);
-    assertEquals("Eastern European Time", timezone.getDisplayName());
+    assertEquals("Eastern European Standard Time", timezone.getDisplayName());
     assertEquals("Europe/Bucharest", timezone.getID());
 
     assertNull(converter.asObject(null, TimeZone.class));

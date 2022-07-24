@@ -148,37 +148,37 @@ public class TypesUnitTest
       private static final long serialVersionUID = -5044225237647579457L;
     }, Date.class));
 
-    assertTrue(Types.isInstanceOf(new Boolean("true"), boolean.class));
+    assertTrue(Types.isInstanceOf(Boolean.valueOf("true"), boolean.class));
     assertTrue(Types.isInstanceOf(true, Boolean.class));
-    assertTrue(Types.isInstanceOf(new Boolean("true"), Boolean.class));
+    assertTrue(Types.isInstanceOf(Boolean.valueOf("true"), Boolean.class));
 
-    assertTrue(Types.isInstanceOf(new Byte((byte)1), byte.class));
+    assertTrue(Types.isInstanceOf(Byte.valueOf((byte)1), byte.class));
     assertTrue(Types.isInstanceOf((byte)1, Byte.class));
-    assertTrue(Types.isInstanceOf(new Byte((byte)1), Byte.class));
+    assertTrue(Types.isInstanceOf(Byte.valueOf((byte)1), Byte.class));
 
-    assertTrue(Types.isInstanceOf(new Character('a'), char.class));
+    assertTrue(Types.isInstanceOf(Character.valueOf('a'), char.class));
     assertTrue(Types.isInstanceOf('a', Character.class));
-    assertTrue(Types.isInstanceOf(new Character('a'), Character.class));
+    assertTrue(Types.isInstanceOf(Character.valueOf('a'), Character.class));
 
-    assertTrue(Types.isInstanceOf(new Short((short)1), short.class));
+    assertTrue(Types.isInstanceOf(Short.valueOf((short)1), short.class));
     assertTrue(Types.isInstanceOf((short)1, Short.class));
-    assertTrue(Types.isInstanceOf(new Short((short)1), Short.class));
+    assertTrue(Types.isInstanceOf(Short.valueOf((short)1), Short.class));
 
-    assertTrue(Types.isInstanceOf(new Integer(1), int.class));
+    assertTrue(Types.isInstanceOf(Integer.valueOf(1), int.class));
     assertTrue(Types.isInstanceOf(1, Integer.class));
-    assertTrue(Types.isInstanceOf(new Integer(1), Integer.class));
+    assertTrue(Types.isInstanceOf(Integer.valueOf(1), Integer.class));
 
-    assertTrue(Types.isInstanceOf(new Long(1L), long.class));
+    assertTrue(Types.isInstanceOf(Long.valueOf(1L), long.class));
     assertTrue(Types.isInstanceOf(1L, Long.class));
-    assertTrue(Types.isInstanceOf(new Long(1L), Long.class));
+    assertTrue(Types.isInstanceOf(Long.valueOf(1L), Long.class));
 
-    assertTrue(Types.isInstanceOf(new Float(1.0F), float.class));
+    assertTrue(Types.isInstanceOf(Float.valueOf(1.0F), float.class));
     assertTrue(Types.isInstanceOf(1.0F, Float.class));
-    assertTrue(Types.isInstanceOf(new Float(1.0F), Float.class));
+    assertTrue(Types.isInstanceOf(Float.valueOf(1.0F), Float.class));
 
-    assertTrue(Types.isInstanceOf(new Double(1.0), double.class));
+    assertTrue(Types.isInstanceOf(Double.valueOf(1.0), double.class));
     assertTrue(Types.isInstanceOf(1.0, Double.class));
-    assertTrue(Types.isInstanceOf(new Double(1.0), Double.class));
+    assertTrue(Types.isInstanceOf(Double.valueOf(1.0), Double.class));
 
     assertFalse(Types.isInstanceOf(null, boolean.class));
     assertFalse(Types.isInstanceOf(null, Boolean.class));
@@ -231,7 +231,7 @@ public class TypesUnitTest
 
     assertTrue(Types.asBoolean(" "));
     assertFalse(Types.asBoolean(""));
-    assertTrue(Types.asBoolean(new Character('a')));
+    assertTrue(Types.asBoolean(Character.valueOf('a')));
     assertTrue(Types.asBoolean((char)0));
 
     assertTrue(Types.asBoolean(new int[]
@@ -410,8 +410,8 @@ public class TypesUnitTest
     {
         1, 2
     }).iterator();
-    assertEquals(new Integer(1), it.next());
-    assertEquals(new Integer(2), it.next());
+    assertEquals(Integer.valueOf(1), it.next());
+    assertEquals(Integer.valueOf(2), it.next());
     try {
       it.next();
       fail("Overbounds iteration should rise exception.");
@@ -423,8 +423,8 @@ public class TypesUnitTest
     list.add(2);
 
     it = Types.asIterable(list).iterator();
-    assertEquals(new Integer(1), it.next());
-    assertEquals(new Integer(2), it.next());
+    assertEquals(Integer.valueOf(1), it.next());
+    assertEquals(Integer.valueOf(2), it.next());
     assertFalse(it.hasNext());
 
     it = Types.asIterable(true).iterator();

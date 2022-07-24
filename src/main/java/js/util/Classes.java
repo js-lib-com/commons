@@ -778,7 +778,7 @@ public class Classes
   @SuppressWarnings("unchecked")
   public static <T> T getFieldValue(Object object, Field field)
   {
-    assert field.isAccessible();
+    assert field.canAccess(object);
     try {
       return (T)field.get(object);
     }
@@ -1640,7 +1640,11 @@ public class Classes
   {
     Class<?> implementation = getImplementation(implementationsRegistry, interfaceType);
     try {
-      return (T)implementation.newInstance();
+      Constructor<?> constructor= implementation.getConstructor();
+      return (T)constructor.newInstance();
+    }
+    catch(NoSuchMethodException e) {
+      throw new BugError(e);
     }
     catch(IllegalAccessException e) {
       // illegal access exception is thrown if the class or its no-arguments constructor is not accessible
@@ -1651,6 +1655,9 @@ public class Classes
       // instantiation exception is thrown if class is abstract, interface, array, primitive or void
       // since we use well known JRE classes this condition may never meet
       throw new BugError(e);
+    }
+    catch(InvocationTargetException e) {
+      throw new BugError(e.getTargetException());
     }
   }
 
