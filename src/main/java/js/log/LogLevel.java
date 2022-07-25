@@ -11,26 +11,23 @@ package js.log;
  * @version final
  */
 public enum LogLevel {
-	/** 7 - The same as {@link #DEBUG} but with finer granularity. */
+	/** 6 - The same as {@link #DEBUG} but with finer granularity. */
 	TRACE,
 
-	/** 6 - Fine-grained informational events that are most useful to debug an application. */
+	/** 5 - Fine-grained informational events that are most useful to debug an application. */
 	DEBUG,
 
-	/** 5 - Informational messages that highlight the progress of the application at coarse-grained level. */
+	/** 4 - Informational messages that highlight the progress of the application at coarse-grained level. */
 	INFO,
 
-	/** 4 - Potentially harmful situations. */
+	/** 3 - Potentially harmful situations. */
 	WARN,
 
-	/** 3 - Error events that might still allow the application to continue running. */
+	/** 2 - Error events that might still allow the application to continue running. */
 	ERROR,
 
-	/** 2 - Very severe error events that will presumably lead the application to abort. */
+	/** 1 - Very severe error events that will presumably lead the application to abort. */
 	FATAL,
-
-	/** 1 - Unexpected condition likely to be a bug. */
-	BUG,
 
 	/** 0 - Log is disabled. */
 	OFF

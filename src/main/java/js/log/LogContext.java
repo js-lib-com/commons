@@ -44,7 +44,7 @@ public interface LogContext
    * @param name name for diagnostic context data, not null,
    * @param value diagnostic context value, possible null.
    */
-  void put(String name, Object value);
+  void put(String name, String value);
 
   /** Cleanup all diagnostic data from this logger context. */
   void clear();

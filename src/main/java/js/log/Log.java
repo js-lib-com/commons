@@ -159,48 +159,6 @@ public interface Log {
 	void fatal(String message, Object... args);
 
 	/**
-	 * Write a message about a condition that is likely to be a bug. This denote the code reaches a point that is not expected.
-	 * For example switch default when expect all cases to be processed or an expected value is missing, see sample code.
-	 * 
-	 * <pre>
-	 * switch(state) {
-	 * 	case PLAYING:
-	 * 	. . .
-	 * 	break;
-	 * 
-	 * case PAUSED:
-	 * 	. . .
-	 * 	break;
-	 *         
-	 * default:
-	 * 	log.bug(&quot;Player state not handled.&quot;);
-	 * }
-	 * </pre>
-	 * 
-	 * <pre>
-	 * Connection connection = connections.remove(listener);
-	 * if (connection == null) {
-	 * 	log.bug(&quot;Unbind called without bind.&quot;);
-	 * 	return;
-	 * }
-	 * </pre>
-	 * 
-	 * @param message formatted message,
-	 * @param args optional arguments for formatted message.
-	 */
-	void bug(String message, Object... args);
-
-	/**
-	 * Bug message variant with integrated condition test. If condition is not true write formatted message but only if bug
-	 * level is enabled. If bug level is not enabled expected condition is not considered and of course message is not written.
-	 * 
-	 * @param expectedCondition condition expected to be true,
-	 * @param message formatted message,
-	 * @param args optional arguments for formatted message.
-	 */
-	void bug(boolean expectedCondition, String message, Object... args);
-
-	/**
 	 * Dump throwable stack trace to this logger using <code>fatal</code> level. Object message is converted to string and write
 	 * before stack trace as a separate log record. This method guarantees atomic operation, that is, no other log record
 	 * present between object message and stack dump.

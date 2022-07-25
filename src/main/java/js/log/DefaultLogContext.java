@@ -8,7 +8,7 @@ package js.log;
 public class DefaultLogContext implements LogContext
 {
   @Override
-  public void put(String name, Object value)
+  public void put(String name, String value)
   {
   }
 

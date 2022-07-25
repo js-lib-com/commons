@@ -135,22 +135,6 @@ public abstract class AbstractLog implements Log
     }
   }
 
-  @Override
-  public void bug(String message, Object... args)
-  {
-    if(isLoggable(LogLevel.BUG)) {
-      log(LogLevel.BUG, format(message, args));
-    }
-  }
-
-  @Override
-  public void bug(boolean expectedCondition, String message, Object... args)
-  {
-    if(isLoggable(LogLevel.BUG) && !expectedCondition) {
-      log(LogLevel.BUG, format(message, args));
-    }
-  }
-
   /**
    * Normalize log message. This method returns message to string; if message is a Throwable and has not null cause
    * returns cause hierarchy formed from cause class name.
