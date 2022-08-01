@@ -9,9 +9,7 @@ import js.util.Classes;
  * Java class converter. This converter supplies (de)serialization services for {@link Class} instances.
  * 
  * @author Iulian Rotaru
- * @version final
  */
-@SuppressWarnings("unchecked")
 final class ClassConverter implements Converter {
 	/** Class logger. */
 	private static final Log log = LogFactory.getLog(ClassConverter.class);
@@ -25,6 +23,7 @@ final class ClassConverter implements Converter {
 	 * to logger and also returns null.
 	 */
 	@Override
+	@SuppressWarnings("unchecked")
 	public <T> T asObject(String string, Class<T> valueType) {
 		// at this point value type is a class
 		if (string.isEmpty())
@@ -45,7 +44,6 @@ final class ClassConverter implements Converter {
 	/** Get string representation for given Java class instance. Return class canonical name. */
 	@Override
 	public String asString(Object object) {
-		assert object != null;
 		assert object instanceof Class;
 		return ((Class<?>) object).getCanonicalName();
 	}

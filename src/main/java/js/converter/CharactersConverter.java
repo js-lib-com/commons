@@ -6,9 +6,7 @@ import js.lang.BugError;
  * Character values converter.
  * 
  * @author Iulian Rotaru
- * @version final
  */
-@SuppressWarnings("unchecked")
 final class CharactersConverter implements Converter {
 	/** Package default constructor. */
 	CharactersConverter() {
@@ -20,6 +18,7 @@ final class CharactersConverter implements Converter {
 	 * @throws ConverterException if given string has more than one single character.
 	 */
 	@Override
+	@SuppressWarnings("unchecked")
 	public <T> T asObject(String string, Class<T> valueType) throws BugError {
 		// at this point value type is guaranteed to be char or Character
 		if (string.length() > 1) {

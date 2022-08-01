@@ -7,9 +7,7 @@ import java.net.URISyntaxException;
  * URL converter.
  * 
  * @author Iulian Rotaru
- * @version final
  */
-@SuppressWarnings("unchecked")
 final class UriConverter implements Converter
 {
   /** Package default converter. */
@@ -23,6 +21,7 @@ final class UriConverter implements Converter
    * @throws ConverterException if given string is not a valid URL.
    */
   @Override
+  @SuppressWarnings("unchecked")
   public <T> T asObject(String string, Class<T> valueType) throws ConverterException
   {
     // at this point value type is guaranteed to be URI
@@ -30,7 +29,7 @@ final class UriConverter implements Converter
       return (T)new URI(string);
     }
     catch(URISyntaxException e) {
-      throw new ConverterException(e.getMessage());
+      throw new ConverterException("Fail to convert invalid URI |%s|. Root cause: %s", string, e.getMessage());
     }
   }
 

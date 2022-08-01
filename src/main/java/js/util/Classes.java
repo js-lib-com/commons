@@ -778,7 +778,6 @@ public class Classes
   @SuppressWarnings("unchecked")
   public static <T> T getFieldValue(Object object, Field field)
   {
-    assert field.canAccess(object);
     try {
       return (T)field.get(object);
     }

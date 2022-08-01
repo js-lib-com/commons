@@ -8,9 +8,7 @@ import java.util.Locale;
  * en-US.
  * 
  * @author Iulian Rotaru
- * @version final
  */
-@SuppressWarnings("unchecked")
 final class LocaleConverter implements Converter {
 	/** Package default converter. */
 	LocaleConverter() {
@@ -22,6 +20,7 @@ final class LocaleConverter implements Converter {
 	 * @throws IllegalArgumentException if given string argument is not well formatted.
 	 */
 	@Override
+	@SuppressWarnings("unchecked")
 	public <T> T asObject(String string, Class<T> valueType) throws IllegalArgumentException {
 		// at this point value type is guaranteed to be a Locale
 		int dashIndex = string.indexOf('-');

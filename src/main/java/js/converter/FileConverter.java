@@ -8,9 +8,7 @@ import js.util.Files;
  * File converter.
  * 
  * @author Iulian Rotaru
- * @version final
  */
-@SuppressWarnings("unchecked")
 final class FileConverter implements Converter {
 	/** Package default constructor. */
 	FileConverter() {
@@ -18,6 +16,7 @@ final class FileConverter implements Converter {
 
 	/** Return file instance for the given path string. */
 	@Override
+	@SuppressWarnings("unchecked")
 	public <T> T asObject(String string, Class<T> valueType) {
 		// at this point value type is guaranteed to be a File
 		return (T) new File(string);

@@ -1,5 +1,6 @@
 package js.converter;
 
+import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 
 import js.util.Files;
@@ -10,7 +11,6 @@ import js.util.Files;
  * @author Iulian Rotaru
  * @since 1.3.1
  */
-@SuppressWarnings("unchecked")
 final class PathConverter implements Converter
 {
   /** Package default constructor. */
@@ -20,10 +20,16 @@ final class PathConverter implements Converter
 
   /** Return file instance for the given path string. */
   @Override
+  @SuppressWarnings("unchecked")
   public <T> T asObject(String string, Class<T> valueType)
   {
     // at this point value type is guaranteed to be a Path
-    return (T)Paths.get(string);
+    try {
+      return (T)Paths.get(string);
+    }
+    catch(InvalidPathException e) {
+      throw new ConverterException("Fail to convert invalid path |%s|. Root cause: %s", string, e.getMessage());
+    }
   }
 
   /** Return file object path. */

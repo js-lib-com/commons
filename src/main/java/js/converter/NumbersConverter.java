@@ -10,9 +10,7 @@ import js.util.Types;
  * specifications as it is generic enough to cover all practical needs.
  * 
  * @author Iulian Rotaru
- * @version final
  */
-@SuppressWarnings("unchecked")
 final class NumbersConverter implements Converter {
 	/** Package default converter. */
 	NumbersConverter() {
@@ -25,6 +23,7 @@ final class NumbersConverter implements Converter {
 	 * @throws BugError if value type is not supported.
 	 */
 	@Override
+	@SuppressWarnings("unchecked")
 	public <T> T asObject(String string, Class<T> valueType) throws BugError {
 		if ("null".equals(string)) {
 			return null;

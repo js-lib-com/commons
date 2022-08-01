@@ -12,9 +12,7 @@ import js.util.Types;
  * languages where enumerations are numeric values.
  * 
  * @author Iulian Rotaru
- * @version final
  */
-@SuppressWarnings("unchecked")
 final class EnumsConverter implements Converter
 {
   /** Package default constructor. */
@@ -31,8 +29,8 @@ final class EnumsConverter implements Converter
    * @throws IndexOutOfBoundsException if value type implements {@link OrdinalEnum}, string argument is a valid number
    *           but is not in the range accepted by target enumeration.
    */
-  @SuppressWarnings("rawtypes")
   @Override
+  @SuppressWarnings({"unchecked", "rawtypes"})
   public <T> T asObject(String string, Class<T> valueType) throws IllegalArgumentException
   {
     if(string.isEmpty()) {

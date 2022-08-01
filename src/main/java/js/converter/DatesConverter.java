@@ -22,9 +22,7 @@ import js.lang.BugError;
  * Date/time values conversion to/from ISO8601.
  * 
  * @author Iulian Rotaru
- * @version final
  */
-@SuppressWarnings("unchecked")
 final class DatesConverter implements Converter {
 	// current conversion format doesn't cope with milliseconds that are simply ignored on parse and don't included in formated
 	// string; client MAY include milliseconds when sent dates as JSON string but MUST not expect them when receive
@@ -58,6 +56,7 @@ final class DatesConverter implements Converter {
 	 * @throws BugError if given value type is not a supported date class.
 	 */
 	@Override
+	@SuppressWarnings("unchecked")
 	public <T> T asObject(String string, Class<T> valueType) {
 		if (string.isEmpty()) {
 			return null;

@@ -6,9 +6,7 @@ import java.util.TimeZone;
  * Time zone converter.
  * 
  * @author Iulian Rotaru
- * @version final
  */
-@SuppressWarnings("unchecked")
 final class TimeZoneConverter implements Converter {
 	/** Package default converter. */
 	TimeZoneConverter() {
@@ -16,6 +14,7 @@ final class TimeZoneConverter implements Converter {
 
 	/** Create time zone instance from time zone ID. If time zone ID is not recognized return UTC. */
 	@Override
+	@SuppressWarnings("unchecked")
 	public <T> T asObject(String string, Class<T> valueType) {
 		// at this point value type is guaranteed to be a kind of TimeZone
 		return (T) TimeZone.getTimeZone(string);
