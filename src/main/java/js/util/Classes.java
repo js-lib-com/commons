@@ -58,21 +58,15 @@ import js.lang.InvocationException;
 import js.lang.NoProviderException;
 import js.lang.NoSuchBeingException;
 import js.lang.VarArgs;
-import js.log.Log;
-import js.log.LogFactory;
 
 /**
  * Handy methods, mostly reflexive, related to class and class loader. This utility class allows for sub-classing. See
  * {@link js.util} for utility sub-classing description.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class Classes
 {
-  /** Class logger. */
-  private static Log log = LogFactory.getLog(Classes.class);
-
   /** Prevent default constructor synthesis but allow sub-classing. */
   protected Classes()
   {
@@ -454,14 +448,16 @@ public class Classes
   }
 
   /**
-   * Variant for {@link #invokeSetter(Object, String, String)} but no exception if setter not found.
+   * Variant for {@link #invokeSetter(Object, String, String)} but no exception if setter not found. Returns false if
+   * setter not found or if has not exactly one parameter.
    * 
    * @param object object instance,
    * @param name setter name,
    * @param value value to set.
+   * @return false if setter not found or does not have exactly one parameter, true otherwise.
    * @throws Exception if invocation fail for whatever reason including method logic.
    */
-  public static void invokeOptionalSetter(Object object, String name, String value) throws Exception
+  public static boolean invokeOptionalSetter(Object object, String name, String value) throws Exception
   {
     String setterName = Strings.getMethodAccessor("set", name);
     Class<?> clazz = object.getClass();
@@ -471,16 +467,15 @@ public class Classes
       method = findMethod(clazz, setterName);
     }
     catch(NoSuchMethodException e) {
-      log.debug("Setter |%s| not found in class |%s| or its super hierarchy.", setterName, clazz);
-      return;
+      return false;
     }
     Class<?>[] parameterTypes = method.getParameterTypes();
     if(parameterTypes.length != 1) {
-      log.debug("Setter |%s#%s(%s)| with invalid parameters number.", method.getDeclaringClass(), method.getName(), Strings.join(parameterTypes, ','));
-      return;
+      return false;
     }
 
     invoke(object, method, ConverterRegistry.getConverter().asObject((String)value, parameterTypes[0]));
+    return true;
   }
 
   /**
@@ -1280,7 +1275,7 @@ public class Classes
         packageURLs.addAll(Collections.list(classLoader.getResources(packagePath)));
       }
       catch(IOException e) {
-        log.error(e);
+        // if resource fails to load it is not included into packages set
       }
     }
     if(packageURLs.isEmpty()) {
@@ -1348,7 +1343,7 @@ public class Classes
             jar.close();
           }
           catch(IOException e) {
-            log.error(e);
+            // since we do not change the jar file there is no reason to fail on close
           }
         }
       }
@@ -1639,7 +1634,7 @@ public class Classes
   {
     Class<?> implementation = getImplementation(implementationsRegistry, interfaceType);
     try {
-      Constructor<?> constructor= implementation.getConstructor();
+      Constructor<?> constructor = implementation.getConstructor();
       return (T)constructor.newInstance();
     }
     catch(NoSuchMethodException e) {

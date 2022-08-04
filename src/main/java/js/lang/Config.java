@@ -20,8 +20,6 @@ import java.util.function.Consumer;
 import js.converter.Converter;
 import js.converter.ConverterException;
 import js.converter.ConverterRegistry;
-import js.log.Log;
-import js.log.LogFactory;
 import js.util.Classes;
 
 /**
@@ -53,12 +51,9 @@ import js.util.Classes;
  * using setters, configuration object still can be used in a concurrent context.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class Config
 {
-  private static final Log log = LogFactory.getLog(Config.class);
-
   /** Configuration object name. */
   private final String name;
 
@@ -71,7 +66,9 @@ public class Config
   /** Children list, possible empty. Children list is usually empty if value exists but is not mandatory. */
   private final List<Config> children = new ArrayList<Config>();
 
-  /** Optional attributes list, possible empty. An attribute is a name/value string pair. Attributes order is preserved. */
+  /**
+   * Optional attributes list, possible empty. An attribute is a name/value string pair. Attributes order is preserved.
+   */
   private final Map<String, String> attributes = new LinkedHashMap<String, String>();
 
   /** Optional properties, possible empty. Properties are usually empty if value exists but is not mandatory. */
@@ -329,37 +326,40 @@ public class Config
   }
 
   /**
-   * Get attribute value converted to requested type or default value if there is no attribute with requested name or
-   * attribute value cannot be converted. If given default value is null and attribute value cannot be retrieved this
-   * method still returns null, that is, the requested default value.
+   * Get attribute value converted to requested type. Return given default value if there is no attribute with requested
+   * name or attribute string value cannot be converted to requested type.
    * 
    * @param name attribute name,
    * @param type type to converter attribute value to,
-   * @param defaultValue default value.
+   * @param defaultValue default value to return if attribute is missing or type conversion fails.
    * @param <T> type to convert attribute value to.
-   * @return newly created value object instance or default value.
+   * @return newly created value object instance or given default value.
    * @throws IllegalArgumentException if <code>name</code> argument is null or empty.
    * @throws IllegalArgumentException if <code>type</code> argument is null.
+   * @throws ConverterException if there is no converter registered for value type.
    */
   public <T> T getAttribute(String name, Class<T> type, T defaultValue)
   {
-    notNullOrEmpty(name, "Attribute name");
-    notNull(type, "Attribute type");
-
-    String value = attributes.get(name);
-    if(value == null) {
-      return defaultValue;
-    }
-
-    try {
-      return converter.asObject(value, type);
-    }
-    catch(ConverterException e) {
-      log.error("Cannot convert attribute |%s[@%s]| value |%s| to |%s|. Root cause: %s: %s", this.name, name, value, type, e.getCause().getClass(), e.getCause().getMessage());
-    }
-    return defaultValue;
+    return getAttribute(name, type, defaultValue, null);
   }
 
+  /**
+   * Get attribute value converted to requested type. Return given default value if there is no attribute with requested
+   * name. If attribute is found but its string value cannot be converted to desired type throws requested exception.
+   * Anyway, if exception argument is null and type conversion fails this method returns given default.
+   * 
+   * @param name attribute name,
+   * @param type type to converter attribute value to,
+   * @param defaultValue default value,
+   * @param exception optional exception to throw if type conversion fails, null accepted.
+   * @param <T> type to convert attribute value to.
+   * @param <E> exception to throw if type conversion fails.
+   * @return newly created value object instance or default value.
+   * @throws IllegalArgumentException if <code>name</code> argument is null or empty.
+   * @throws IllegalArgumentException if <code>type</code> argument is null.
+   * @throws ConverterException if there is no converter registered for value type.
+   * @throws E if named attribute is found but its string value cannot be converted to requested type.
+   */
   public <T, E extends Exception> T getAttribute(String name, Class<T> type, T defaultValue, Class<E> exception) throws E
   {
     notNullOrEmpty(name, "Attribute name");
@@ -370,14 +370,20 @@ public class Config
       return defaultValue;
     }
 
+    if(!ConverterRegistry.hasType(type)) {
+      throw new ConverterException("Missing converter for type |%s|.", type);
+    }
+
     try {
       return converter.asObject(value, type);
     }
     catch(ConverterException e) {
-      String message = String.format("Cannot convert attribute |%s[@%s]| value |%s| to |%s|. Root cause: %s: %s", this.name, name, value, type, e.getCause().getClass(), e.getCause().getMessage());
-      log.error(message);
-      throw Classes.newException(exception, message);
+      if(exception != null) {
+        throw Classes.newException(exception, "Cannot convert attribute |%s[@%s]| value |%s| to |%s|. Root cause: %s: %s", this.name, name, value, type, e.getCause().getClass(), e.getCause().getMessage());
+      }
     }
+
+    return defaultValue;
   }
 
   public void attributes(Consumer<String> consumer)

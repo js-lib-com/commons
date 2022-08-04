@@ -35,7 +35,6 @@ import java.util.Locale;
  * 
  * @param <T> type of objects stored by this cache.
  * @author Iulian Rotaru
- * @version final
  */
 public interface I18nPool<T> {
 	/**

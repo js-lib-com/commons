@@ -32,7 +32,6 @@ import js.util.Params;
  * running. If is preferable to stop running on exception uses the constructor {@link #AbstractLooper(int, boolean)}.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public abstract class AbstractLooper implements ManagedLifeCycle, Looper
 {

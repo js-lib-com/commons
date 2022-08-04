@@ -27,7 +27,6 @@ import java.util.Map;
  * This utility class allows for sub-classing. See {@link js.util} for utility sub-classing description.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class Params
 {

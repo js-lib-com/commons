@@ -5,7 +5,6 @@ package js.lang;
  * 
  * @param <T> all variable arguments have the same type.
  * @author Iulian Rotaru
- * @version final
  */
 public class VarArgs<T> {
 	/** Predefined NULL variable arguments instance. */

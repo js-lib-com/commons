@@ -7,7 +7,6 @@ import java.util.Locale;
  * Full time format - 11:40:00 AM UTC.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public final class FullTime extends DateTimeFormat {
 	@Override

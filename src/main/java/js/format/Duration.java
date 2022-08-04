@@ -15,7 +15,6 @@ import java.util.Map;
  * class.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public final class Duration implements Format
 {
@@ -130,7 +129,6 @@ public final class Duration implements Format
    * Duration measurement units.
    * 
    * @author Iulian Rotaru
-   * @version final
    */
   private enum Units
   {

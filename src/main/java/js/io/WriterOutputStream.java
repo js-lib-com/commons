@@ -17,7 +17,6 @@ import java.nio.charset.CodingErrorAction;
  * buffer overflow, output buffer is transfered to underlying target writer.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class WriterOutputStream extends OutputStream
 {

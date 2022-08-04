@@ -4,7 +4,6 @@ package js.io;
  * Invalid files archive thrown by {@link FilesInputStream} when given files archive is not well formed or fail to read.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class InvalidFilesArchiveException extends RuntimeException
 {

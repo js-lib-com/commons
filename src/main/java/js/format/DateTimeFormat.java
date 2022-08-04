@@ -41,7 +41,6 @@ import java.util.TimeZone;
  * date time formatter instances are not thread safe. Anyway, inside a thread, formatter instances can be reused.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public abstract class DateTimeFormat implements Format
 {

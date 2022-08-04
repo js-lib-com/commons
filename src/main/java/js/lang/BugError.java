@@ -9,7 +9,6 @@ package js.lang;
  * normally caught.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class BugError extends Error
 {

@@ -34,7 +34,6 @@ import java.util.Map;
  * </pre>
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class VariablesWriter extends Writer {
 	/** Target writer is where stream with variables injected is actually being write. */
@@ -148,7 +147,6 @@ public class VariablesWriter extends Writer {
 	 * Internal state machine for variables writer parser.
 	 * 
 	 * @author Iulian Rotaru
-	 * @version final
 	 */
 	private static enum State {
 		/** Neutral value */

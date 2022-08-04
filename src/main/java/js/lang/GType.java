@@ -29,7 +29,6 @@ import java.lang.reflect.Type;
  * <em>parameterized type</em>.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class GType implements ParameterizedType {
 	/**

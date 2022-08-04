@@ -25,7 +25,6 @@ import java.util.List;
  * </pre>
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class PairsList implements Iterable<Pair>
 {

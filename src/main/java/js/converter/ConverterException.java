@@ -4,7 +4,6 @@ package js.converter;
  * Generic converters exception thrown when a converter implementation fails to do its job.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class ConverterException extends RuntimeException
 {

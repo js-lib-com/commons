@@ -1,7 +1,5 @@
 package js.lang;
 
-import js.log.Log;
-import js.log.LogFactory;
 import js.util.Params;
 
 /**
@@ -55,16 +53,14 @@ import js.util.Params;
  * exception listener after looper thread start.
  * <p>
  * Looper thread runs till explicit {@link #stop()}. This is true even if a loop execution throws exception; default
- * behavior is to dump stack and continue loop iterations. Anyway, if desirable to break the loop on exception one can
- * use {@link #LooperThread(Looper, int, boolean)} constructor to set {@link #breakOnException} flag to true.
+ * behavior is to invoke {@link AsyncExceptionListener#onAsyncException(Throwable)} and continue loop iterations.
+ * Anyway, if desirable to break the loop on exception one can use {@link #LooperThread(Looper, int, boolean)}
+ * constructor to set {@link #breakOnException} flag to true.
  * 
  * @author Iulian Rotaru
  */
 public class LooperThread implements Runnable
 {
-  /** Class logger. */
-  private static final Log log = LogFactory.getLog(LooperThread.class);
-
   /** Looper thread start-up timeout. */
   private static final int STARTUP_TIMEOUT = 10000;
 
@@ -204,9 +200,6 @@ public class LooperThread implements Runnable
     synchronized(this) {
       notify();
     }
-    log.trace("Looper thread |%s| started.", thread);
-    long start = System.currentTimeMillis();
-
     // next iteration timestamp, used only if period is not zero
     long nextIterationTimestamp = 0;
     // millisecond for looper thread to sleep till next iteration, in milliseconds
@@ -227,9 +220,6 @@ public class LooperThread implements Runnable
 
         if(exceptionListener != null) {
           exceptionListener.onAsyncException(throwable);
-        }
-        else {
-          log.dump("Error on loop execution. Stack trace follows: ", throwable);
         }
         if(breakOnException) {
           break;
@@ -258,7 +248,6 @@ public class LooperThread implements Runnable
     }
 
     // notify caller thread so that #stop() method can finish but first ensure log trace is written
-    log.trace("Looper thread |%s| stopped. Processing time %d msec.", thread, System.currentTimeMillis() - start);
     synchronized(this) {
       notify();
     }
@@ -273,7 +262,6 @@ public class LooperThread implements Runnable
    */
   public void join(long millis) throws InterruptedException
   {
-    log.trace("join(long)");
     thread.join(millis);
   }
 

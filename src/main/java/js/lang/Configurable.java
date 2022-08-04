@@ -8,7 +8,6 @@ package js.lang;
  * interface may choose to support warm configuration but is not mandatory.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public interface Configurable {
 	/**

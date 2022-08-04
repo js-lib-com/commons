@@ -7,7 +7,6 @@ import java.util.Locale;
  * Short date/time format - 3/15/64 11:40 AM.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public final class ShortDateTime extends DateTimeFormat {
 	@Override

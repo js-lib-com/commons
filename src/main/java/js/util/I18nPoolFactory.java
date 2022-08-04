@@ -28,7 +28,6 @@ import js.lang.BugError;
  * </pre>
  * 
  * @author Iulian Rotaru
- * @version final
  */
 final class I18nPoolFactory {
 	/**
@@ -58,7 +57,6 @@ final class I18nPoolFactory {
 	 * 
 	 * @param <T> pool object type.
 	 * @author Iulian Rotaru
-	 * @version final
 	 */
 	private static class SimplePool<T> implements I18nPool<T> {
 		/** Cache storage. */
@@ -88,7 +86,6 @@ final class I18nPoolFactory {
 	 * 
 	 * @param <T> pool object type.
 	 * @author Iulian Rotaru
-	 * @version final
 	 */
 	private static class LocalePool<T> implements I18nPool<T> {
 		/**

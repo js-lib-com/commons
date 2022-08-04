@@ -4,7 +4,6 @@ package js.lang;
  * Immutable pair of string values.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public final class Pair
 {

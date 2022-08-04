@@ -73,7 +73,6 @@ import js.lang.ConfigException;
  * absolute. If files pattern is not provided accept all files.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class I18nRepository implements Iterable<I18nFile>
 {
@@ -169,7 +168,6 @@ public class I18nRepository implements Iterable<I18nFile>
    * 
    * 
    * @author Iulian Rotaru
-   * @version final
    */
   public static class ConfigBuilder extends js.lang.ConfigBuilder
   {
@@ -249,7 +247,6 @@ public class I18nRepository implements Iterable<I18nFile>
    * I18N repository implementation optimized for single locale.
    * 
    * @author Iulian Rotaru
-   * @version final
    */
   private static class SingleLocale implements Iterable<I18nFile>
   {
@@ -286,7 +283,6 @@ public class I18nRepository implements Iterable<I18nFile>
      * Single locale iterator for I18N repository. Iterator is not reusable nor thread safe.
      * 
      * @author Iulian Rotaru
-     * @version final
      */
     private class FileIterator implements Iterator<I18nFile>
     {
@@ -347,7 +343,6 @@ public class I18nRepository implements Iterable<I18nFile>
    * Matching files are added to internal list but no particular order is guaranteed.
    * 
    * @author Iulian Rotaru
-   * @version final
    */
   private static class MultipleLocale implements Iterable<I18nFile>
   {

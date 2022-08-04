@@ -4,7 +4,6 @@ package js.lang;
  * Identify an instance by its name in a context where multiple instances of the same type could exists.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public interface NamedInstance {
 	/**

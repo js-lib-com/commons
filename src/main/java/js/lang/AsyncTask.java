@@ -53,7 +53,6 @@ package js.lang;
  * 
  * @param <Value> task returned value type.
  * @author Iulian Rotaru
- * @version final
  */
 public abstract class AsyncTask<Value> {
 	/**

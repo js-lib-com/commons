@@ -38,7 +38,6 @@ package js.lang;
  * </pre>
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public interface AsyncExceptionListener {
 	/**

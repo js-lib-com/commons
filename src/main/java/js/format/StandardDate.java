@@ -8,7 +8,6 @@ import java.util.Locale;
  * Standard date format - 1964-03-15
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public final class StandardDate extends DateTimeFormat {
 	/** Constant for standard date format. */

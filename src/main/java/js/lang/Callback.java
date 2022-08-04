@@ -27,7 +27,6 @@ package js.lang;
  * @param <Value> value type returned by asynchronous logic.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public interface Callback<Value> {
 	/**

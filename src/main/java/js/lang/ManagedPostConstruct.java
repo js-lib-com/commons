@@ -6,7 +6,6 @@ package js.lang;
  * interface simply throws all exceptions post-construct logic may rise.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public interface ManagedPostConstruct
 {

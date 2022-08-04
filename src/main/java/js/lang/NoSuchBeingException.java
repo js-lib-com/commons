@@ -7,7 +7,6 @@ package js.lang;
  * {@link ClassNotFoundException}.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class NoSuchBeingException extends RuntimeException
 {

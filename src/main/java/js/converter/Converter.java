@@ -47,7 +47,6 @@ import java.lang.reflect.Type;
  * 
  * @author Iulian Rotaru
  * @see js.converter package description
- * @version final
  */
 public interface Converter {
 	/**

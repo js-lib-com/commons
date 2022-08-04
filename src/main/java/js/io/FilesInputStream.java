@@ -52,7 +52,6 @@ import js.util.Files;
  * retrieve application meta data uing {@link #getMeta(String)} and related methods.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class FilesInputStream extends InputStream implements Iterable<File>, Closeable {
 	/** Implementation version. */
@@ -247,7 +246,6 @@ public class FilesInputStream extends InputStream implements Iterable<File>, Clo
 	 * Iterator over files archive.
 	 * 
 	 * @author Iulian Rotaru
-	 * @version final
 	 */
 	private class FilesIterator implements Iterator<File> {
 		/** Current processing file. */

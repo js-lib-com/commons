@@ -7,7 +7,6 @@ import java.util.Locale;
  * Long date format - March 15, 1964.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public final class LongDate extends DateTimeFormat {
 	@Override

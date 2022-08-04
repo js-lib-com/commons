@@ -6,7 +6,6 @@ import js.util.Strings;
  * Extends Java illegal argument exception with constructors for formatted messages.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class IllegalArgumentException extends java.lang.IllegalArgumentException {
 	/** Java serialization version. */

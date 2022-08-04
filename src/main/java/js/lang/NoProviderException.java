@@ -4,7 +4,6 @@ package js.lang;
  * No run-time service provider found for requested service interface.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class NoProviderException extends RuntimeException {
 	/** Java serialization version. */

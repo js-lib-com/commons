@@ -10,7 +10,6 @@ package js.lang;
  * @param <Argument> type of argument.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public interface Handler<Value, Argument> {
 	/**

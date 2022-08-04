@@ -22,7 +22,6 @@ import js.util.Strings;
  * delegates {@link #fillBytesBuffer()}.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class ReaderInputStream extends InputStream
 {

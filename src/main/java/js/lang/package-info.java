@@ -3,6 +3,5 @@
  * See every class description for details. 
  * 
  * @author Iulian Rotaru
- * @version final
  */
 package js.lang;

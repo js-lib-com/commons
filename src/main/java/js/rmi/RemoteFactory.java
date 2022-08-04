@@ -26,7 +26,6 @@ package js.rmi;
  * remote class and that remote class actually implements given interface.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public interface RemoteFactory
 {

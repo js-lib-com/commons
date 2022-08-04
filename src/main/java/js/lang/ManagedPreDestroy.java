@@ -9,7 +9,6 @@ package js.lang;
  * about a particular exception. This interface simply throws all exceptions pre-destroy logic may rise.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public interface ManagedPreDestroy
 {

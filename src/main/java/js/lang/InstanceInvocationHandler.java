@@ -12,7 +12,6 @@ import java.lang.reflect.InvocationHandler;
  * 
  * @author Iulian Rotaru
  * @param <T> wrapped instance type.
- * @version final
  */
 public interface InstanceInvocationHandler<T> extends InvocationHandler
 {

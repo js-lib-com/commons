@@ -26,7 +26,6 @@ import js.io.WildcardFilter;
  * </pre>
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class FilteredStrings extends AbstractList<String> {
 	/** List used to collect strings. */

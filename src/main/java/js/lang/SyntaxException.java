@@ -4,7 +4,6 @@ package js.lang;
  * Thrown whenever a parser encounter illegal syntax. For example missing pair separator from {@link PairsList}.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class SyntaxException extends RuntimeException {
 	/** Java serialization version. */

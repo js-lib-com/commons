@@ -50,7 +50,6 @@ import js.util.Strings;
  * Finally, this class is not intended to be reused: its state is changing while iterating over files. Also is not thread safe.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class FilesIterator<T> implements Iterator<T>, Iterable<T> {
 	// -------------------------------------------------------
@@ -313,7 +312,6 @@ public class FilesIterator<T> implements Iterator<T>, Iterable<T> {
 	 * Working directory context data saved on directory stack.
 	 * 
 	 * @author Iulian Rotaru
-	 * @version final
 	 */
 	private class Directory {
 		/** Directory files list. */
@@ -340,7 +338,6 @@ public class FilesIterator<T> implements Iterator<T>, Iterable<T> {
 	 * Strategy for processing files iterator next operation.
 	 * 
 	 * @author Iulian Rotaru
-	 * @version final
 	 */
 	private enum Strategy {
 		/** Neutral value. */
@@ -359,7 +356,6 @@ public class FilesIterator<T> implements Iterator<T>, Iterable<T> {
 	 * Strategy handler for iterator next operation processing.
 	 * 
 	 * @author Iulian Rotaru
-	 * @version final
 	 */
 	private interface Handler {
 		/**
@@ -374,7 +370,6 @@ public class FilesIterator<T> implements Iterator<T>, Iterable<T> {
 	 * Handler for absolute files iterator.
 	 * 
 	 * @author Iulian Rotaru
-	 * @version final
 	 */
 	private class FilesHandler implements Handler {
 		/**
@@ -392,7 +387,6 @@ public class FilesIterator<T> implements Iterator<T>, Iterable<T> {
 	 * Handler for relative files iterator.
 	 * 
 	 * @author Iulian Rotaru
-	 * @version final
 	 */
 	private class RelativeFilesHandler implements Handler {
 		/**
@@ -413,7 +407,6 @@ public class FilesIterator<T> implements Iterator<T>, Iterable<T> {
 	 * Handler for absolute file names iterator.
 	 * 
 	 * @author Iulian Rotaru
-	 * @version final
 	 */
 	private class NamesHandler extends FilesHandler {
 		/**
@@ -431,7 +424,6 @@ public class FilesIterator<T> implements Iterator<T>, Iterable<T> {
 	 * Handler for relative file names iterator.
 	 * 
 	 * @author Iulian Rotaru
-	 * @version final
 	 */
 	private class RelativeNamesHandler extends RelativeFilesHandler {
 		/**

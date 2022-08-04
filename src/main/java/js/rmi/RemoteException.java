@@ -6,7 +6,6 @@ import js.util.Strings;
  * Data transport object used to convey information about exceptional condition at server level.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public final class RemoteException
 {

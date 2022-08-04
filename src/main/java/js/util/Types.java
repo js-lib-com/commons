@@ -38,7 +38,6 @@ import js.lang.BugError;
  * </pre>
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class Types
 {

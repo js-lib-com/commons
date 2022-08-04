@@ -12,7 +12,6 @@ import java.text.ParseException;
  * to be represented as a single string - a sort of data atom, e.g. java.io.File or java.net.URL.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public interface Format
 {

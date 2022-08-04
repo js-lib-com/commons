@@ -7,7 +7,6 @@ import java.util.Map;
  * implementation should be deployed as Java service in order to be discovered and loaded at run-time.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public interface ConverterProvider {
 	/**

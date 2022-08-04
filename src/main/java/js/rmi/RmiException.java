@@ -6,7 +6,6 @@ import java.net.URL;
  * HTTP-RMI runtime exception.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class RmiException extends RuntimeException
 {

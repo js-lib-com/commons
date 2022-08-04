@@ -8,7 +8,6 @@ import java.util.Locale;
  * Standard time format - 14:30:00
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public final class StandardTime extends DateTimeFormat {
 	/** Constant for standard time format. */

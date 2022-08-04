@@ -24,8 +24,8 @@ import js.util.Params;
  * 	...
  * }
  * </pre>
- *
- * @version final
+ * 
+ * @author Iulian Rotaru
  */
 public class WildcardFilter implements FileFilter, FilenameFilter, Serializable {
 	/** Java serialization version. */

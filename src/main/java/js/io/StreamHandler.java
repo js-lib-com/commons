@@ -83,7 +83,6 @@ import js.util.Classes;
  * 
  * @author Iulian Rotaru
  * @param <T> wrapped output stream.
- * @version final
  */
 public abstract class StreamHandler<T extends OutputStream>
 {

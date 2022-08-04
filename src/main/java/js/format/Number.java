@@ -8,7 +8,6 @@ import java.util.Locale;
  * Numeric value format - 12.34. This class is a thin wrapper for Java {@link NumberFormat} with grouping.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public final class Number implements Format
 {

@@ -8,7 +8,6 @@ import java.lang.reflect.Type;
  * component type.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class GAType implements GenericArrayType {
 	/** Array component type. */

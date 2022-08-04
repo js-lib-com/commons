@@ -27,7 +27,6 @@ import javax.net.ssl.X509TrustManager;
  * safe.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class DefaultTrustManager implements X509TrustManager
 {

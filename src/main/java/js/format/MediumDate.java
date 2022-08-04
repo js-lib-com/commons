@@ -7,7 +7,6 @@ import java.util.Locale;
  * Medium date format - Mar 15, 1964.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public final class MediumDate extends DateTimeFormat {
 	@Override

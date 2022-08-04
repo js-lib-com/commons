@@ -70,7 +70,6 @@
  * </pre>
  * 
  * @author Iulian Rotaru
- * @version final
  */
 package js.format;
 

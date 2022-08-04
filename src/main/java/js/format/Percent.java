@@ -12,7 +12,6 @@ import java.util.Locale;
  * implementation is not thread safe.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public final class Percent implements Format
 {

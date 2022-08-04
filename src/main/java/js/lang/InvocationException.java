@@ -6,7 +6,6 @@ import java.lang.reflect.InvocationTargetException;
  * Unchecked alternative for Java invocation target exception.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class InvocationException extends RuntimeException
 {

@@ -40,7 +40,6 @@ package js.rmi;
  * Note that this exception is checked since it is desirable to explicitly state we are going to use it.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public final class BusinessException extends Exception {
 	/** Java serialization version. */

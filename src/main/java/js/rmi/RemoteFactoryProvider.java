@@ -10,7 +10,6 @@ package js.rmi;
  * by distributed archive on <code>META-INF/services/js.rmi.RemoteFactoryProvider</code> file.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public interface RemoteFactoryProvider
 {

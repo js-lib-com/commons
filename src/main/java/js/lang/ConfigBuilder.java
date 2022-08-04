@@ -34,7 +34,6 @@ import js.util.Strings;
  * Current builder implementation supports two main configuration sources: XML and Java properties.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class ConfigBuilder
 {
@@ -134,7 +133,6 @@ public class ConfigBuilder
    * SAX handler for configuration object loading from XML source.
    * 
    * @author Iulian Rotaru
-   * @version final
    */
   private static class Loader extends DefaultHandler
   {

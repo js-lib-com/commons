@@ -54,7 +54,6 @@ import js.util.Files;
  * meta data uing {@link FilesInputStream#getMeta(String)} and related methods.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class FilesOutputStream extends OutputStream implements Closeable {
 	/** Files archive implementation version. */

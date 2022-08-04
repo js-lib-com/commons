@@ -9,7 +9,6 @@ import java.util.Iterator;
  * @param <E> enumeration element
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public final class IteratorEnumeration<E> implements Enumeration<E> {
 	/** Internal iterator. */

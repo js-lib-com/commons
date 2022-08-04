@@ -5,7 +5,6 @@ package js.lang;
  * configuration is not well formed or does not suits.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class ConfigException extends Exception
 {

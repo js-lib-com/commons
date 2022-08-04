@@ -21,8 +21,6 @@ import java.util.TimeZone;
 
 import js.lang.BugError;
 import js.lang.NoSuchBeingException;
-import js.log.Log;
-import js.log.LogFactory;
 import js.util.Classes;
 import js.util.Params;
 import js.util.Types;
@@ -125,9 +123,6 @@ import js.util.Types;
  */
 public final class ConverterRegistry implements Converter
 {
-  /** Class logger. */
-  private static final Log log = LogFactory.getLog(ConverterRegistry.class);
-
   /** Converter singleton. */
   // TODO: solution is not sound; it is vulnerable to multiple class loaders
   private static final ConverterRegistry instance = new ConverterRegistry();
@@ -244,22 +239,18 @@ public final class ConverterRegistry implements Converter
    * 
    * @param valueType value type class,
    * @param converterClass specialized converter class.
+   * @return true if is a new registration or false and override of existing converter.
    * @throws BugError if converter class is not instantiable.
    * @throws NoSuchBeingException if converter class has no default constructor.
    */
-  public void registerConverter(Class<?> valueType, Class<? extends Converter> converterClass)
+  public boolean registerConverter(Class<?> valueType, Class<? extends Converter> converterClass)
   {
     Converter converter = Classes.newInstance(converterClass);
     if(Types.isConcrete(valueType)) {
-      registerConverterInstance(valueType, converter);
+      return converters.put(valueType, converter) == null;
     }
     else {
-      if(abstractConverters.put(valueType, converter) == null) {
-        log.debug("Register abstract converter |%s| for value type |%s|.", converterClass, valueType);
-      }
-      else {
-        log.warn("Override abstract converter |%s| for value type |%s|.", converterClass, valueType);
-      }
+      return abstractConverters.put(valueType, converter) == null;
     }
   }
 
@@ -371,7 +362,7 @@ public final class ConverterRegistry implements Converter
 
             for(Map.Entry<Class<?>, Converter> entries : abstractConverters.entrySet()) {
               if(Types.isKindOf(valueType, entries.getKey())) {
-                registerConverterInstance(valueType, entries.getValue());
+                converters.put(valueType, entries.getValue());
               }
             }
           }
@@ -384,21 +375,5 @@ public final class ConverterRegistry implements Converter
       return enumsConverter;
     }
     return c;
-  }
-
-  /**
-   * Utility method to bind converter instance to concrete value type.
-   * 
-   * @param valueType concrete value type,
-   * @param converter converter instance able to handle value type.
-   */
-  private void registerConverterInstance(Class<?> valueType, Converter converter)
-  {
-    if(converters.put(valueType, converter) == null) {
-      log.debug("Register converter |%s| for value type |%s|.", converter.getClass(), valueType);
-    }
-    else {
-      log.warn("Override converter |%s| for value type |%s|.", converter.getClass(), valueType);
-    }
   }
 }

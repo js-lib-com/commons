@@ -36,8 +36,6 @@ import js.io.VariablesWriter;
 import js.lang.BugError;
 import js.lang.Handler;
 import js.lang.Pair;
-import js.log.Log;
-import js.log.LogFactory;
 
 /**
  * Strings manipulation utility. This utility class allows for sub-classing. See {@link js.util} for utility
@@ -47,9 +45,6 @@ import js.log.LogFactory;
  */
 public class Strings
 {
-  /** Class logger. */
-  private static final Log log = LogFactory.getLog(Strings.class);
-
   /** Prevent default constructor synthesis but allow sub-classing. */
   protected Strings()
   {
@@ -1332,7 +1327,7 @@ public class Strings
       Files.copy(new StringReader(template), writer);
     }
     catch(IOException e) {
-      log.error(e);
+      // ignore IO exception on strings
     }
     return writer.toString();
   }
@@ -1444,7 +1439,8 @@ public class Strings
    * <ul>
    * <li>replace {@link Class} with its canonical name,
    * <li>replace {@link Throwable} with exception message or exception class canonical name if null message,
-   * <li>replace {@link Thread} with concatenation of thread name and thread ID.
+   * <li>replace {@link Thread} with concatenation of thread name and thread ID,
+   * <li>replace {@link File} with its absolute path.
    * </ul>
    * All pre-processed arguments are replaced with string value and format specifier should be also string (%s).
    * 
@@ -1492,7 +1488,7 @@ public class Strings
       return String.format(format, args);
     }
     catch(IllegalFormatException e) {
-      log.error("Format operation aborted due to error on string format. Returns original, not formated string. Root cause is: ", e);
+      // ignore format errors and return original string
     }
     return format;
   }

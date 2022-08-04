@@ -12,7 +12,6 @@ import java.util.Locale;
  * argument exception if <code>locale</code> argument has variant, script or extension.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class I18nFile {
 	/** The file path. */

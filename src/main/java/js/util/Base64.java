@@ -15,7 +15,6 @@ import js.lang.BugError;
  * </pre>
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public final class Base64 {
 	/** Mapping table from 6-bit nibbles to Base64 characters. */

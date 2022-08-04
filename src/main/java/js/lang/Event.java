@@ -6,7 +6,6 @@ package js.lang;
  * implementing this interface. Another example may be push notification system where a notification is an event.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public interface Event
 {

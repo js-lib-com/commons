@@ -7,7 +7,6 @@ import java.util.Locale;
  * Full date format - Sunday, March 15, 1964.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public final class FullDate extends DateTimeFormat {
 	@Override

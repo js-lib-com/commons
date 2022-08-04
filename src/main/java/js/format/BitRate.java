@@ -14,7 +14,6 @@ import java.util.Map;
  * and always has two decimals. For supported units take a look at {@link BitRate.Units} class.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public final class BitRate implements Format
 {
@@ -129,7 +128,6 @@ public final class BitRate implements Format
    * Bit rate measurement units.
    * 
    * @author Iulian Rotaru
-   * @version final
    */
   private enum Units
   {

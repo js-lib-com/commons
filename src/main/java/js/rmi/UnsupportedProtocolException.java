@@ -4,7 +4,6 @@ package js.rmi;
  * Exception thrown by {@link RemoteFactory} if URL protocol is not supported.
  * 
  * @author Iulian Rotaru
- * @version final
  */
 public class UnsupportedProtocolException extends RuntimeException
 {
