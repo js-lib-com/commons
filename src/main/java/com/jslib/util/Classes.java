@@ -1426,8 +1426,30 @@ public class Classes
    * @throws BugError for any other failing condition, since there is no particular reason to expect fail.
    * @throws InvocationException with target exception if constructor fails on its execution.
    */
-  @SuppressWarnings("unchecked")
   public static <T> T newInstance(Class<T> clazz, Object... arguments) throws BugError, NoSuchBeingException, InvocationException
+  {
+    return newInstance(missingConstructorException(clazz, arguments), clazz, arguments);
+  }
+
+  /**
+   * Variant of {@link #newInstance(Class, Object...) that does not throw exception on missing constructor but returns
+   * null.
+   * 
+   * @param clazz object class to instantiate,
+   * @param arguments optional constructor arguments.
+   * @param <T> instance type.
+   * @return newly created instance
+   * @throws BugError if attempt to instantiate interface, abstract, array or void class.
+   * @throws BugError for any other failing condition, since there is no particular reason to expect fail.
+   * @throws InvocationException with target exception if constructor fails on its execution.
+   */
+  public static <T> T newOptionalInstance(Class<T> clazz, Object... arguments) throws BugError, InvocationException
+  {
+    return newInstance(null, clazz, arguments);
+  }
+
+  @SuppressWarnings("unchecked")
+  private static <T> T newInstance(NoSuchBeingException missingConstructorException, Class<T> clazz, Object... arguments) throws BugError, NoSuchBeingException, InvocationException
   {
     if(clazz.isInterface()) {
       throw new BugError("Attempt to create new instance for interface |%s|.", clazz);
@@ -1462,7 +1484,10 @@ public class Classes
           break;
         }
         if(constructor == null) {
-          throw missingConstructorException(clazz, arguments);
+          if(missingConstructorException != null) {
+            throw missingConstructorException;
+          }
+          return null;
         }
       }
       else {
@@ -1472,7 +1497,10 @@ public class Classes
       return constructor.newInstance(arguments);
     }
     catch(NoSuchMethodException e) {
-      throw missingConstructorException(clazz, arguments);
+      if(missingConstructorException != null) {
+        throw missingConstructorException;
+      }
+      return null;
     }
     catch(InstantiationException | IllegalAccessException | IllegalArgumentException e) {
       throw new BugError(e);
@@ -1532,9 +1560,9 @@ public class Classes
   {
     Type[] types = new Type[arguments.length];
     for(int i = 0; i < arguments.length; ++i) {
-      types[i] = arguments[i].getClass();
+      types[i] = arguments[i] != null ? arguments[i].getClass() : null;
     }
-    return new NoSuchBeingException("Constructor or dependecies not found or fail to execute on %s(%s).", clazz.getCanonicalName(), Arrays.toString(types));
+    return new NoSuchBeingException("Constructor or dependecies not found or fail to execute %s(%s).", clazz.getCanonicalName(), Arrays.toString(types));
   }
 
   /** Default implementations for collection interfaces. */

@@ -13,7 +13,7 @@ public class ExceptionUnitTest
   public void testRemoteException()
   {
     RemoteException exception = new RemoteException(new IOException("test"));
-    assertEquals(IOException.class.getName(), exception.getCause());
+    assertEquals("java.io.IOException", exception.getType());
     assertEquals("test", exception.getMessage());
     assertEquals("java.io.IOException: test", exception.toString());
   }

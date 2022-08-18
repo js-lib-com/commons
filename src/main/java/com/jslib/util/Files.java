@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
@@ -35,7 +36,6 @@ import java.util.zip.ZipOutputStream;
 
 import com.jslib.io.ReaderInputStream;
 import com.jslib.lang.BugError;
-import com.jslib.lang.Predicate;
 
 /**
  * Functions for files, byte and character streams copy and file path manipulation. This class supplies methods for byte
@@ -458,15 +458,13 @@ public class Files
     try {
       closeable.close();
     }
-    catch(IOException e) {
-    }
+    catch(IOException e) {}
     catch(IncompatibleClassChangeError error) {
       // Closeable interface not implemented; invoke close method directly on instance
       try {
         Classes.invoke(closeable, "close");
       }
-      catch(Throwable throwable) {
-      }
+      catch(Throwable throwable) {}
     }
   }
 
@@ -1087,7 +1085,7 @@ public class Files
    */
   private static void removeDirectory(File directory) throws IOException
   {
-    // File.listFiles() may return null is file is not a directory 
+    // File.listFiles() may return null is file is not a directory
     // condition already tested before entering this method
     for(File file : directory.listFiles()) {
       if(file.isDirectory()) {
@@ -1100,26 +1098,10 @@ public class Files
   }
 
   /** Predefined predicates used by {@link #inotify(File, FileNotify, int)}. */
-  private static final Map<FileNotify, Predicate> INOTIFY_PREDICATES = new HashMap<FileNotify, Predicate>();
+  private static final Map<FileNotify, Predicate<File>> INOTIFY_PREDICATES = new HashMap<>();
   static {
-    INOTIFY_PREDICATES.put(FileNotify.CREATE, new Predicate()
-    {
-      @Override
-      public boolean test(Object value)
-      {
-        assert value instanceof File;
-        return ((File)value).exists();
-      }
-    });
-    INOTIFY_PREDICATES.put(FileNotify.DELETE, new Predicate()
-    {
-      @Override
-      public boolean test(Object value)
-      {
-        assert value instanceof File;
-        return !((File)value).exists();
-      }
-    });
+    INOTIFY_PREDICATES.put(FileNotify.CREATE, file -> file.exists());
+    INOTIFY_PREDICATES.put(FileNotify.DELETE, file -> file.exists());
   }
 
   /**
@@ -1139,7 +1121,7 @@ public class Files
   {
     Params.notNull(file, "File");
 
-    Predicate predicate = INOTIFY_PREDICATES.get(notify);
+    Predicate<File> predicate = INOTIFY_PREDICATES.get(notify);
     if(predicate == null) {
       throw new BugError("Unsupported file notification |%s|. Missing predicate.", notify);
     }

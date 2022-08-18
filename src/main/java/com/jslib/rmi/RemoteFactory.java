@@ -46,5 +46,5 @@ public interface RemoteFactory
    * @throws UnsupportedProtocolException if URL protocol is not supported or arguments are otherwise not valid or null
    *           - in which case root cause has details about erroneous argument.
    */
-  <T> T getRemoteInstance(Class<? super T> interfaceClass, String implementationURL) throws UnsupportedProtocolException;
+  <T> T getRemoteInstance(Class<? super T> interfaceClass, String implementationURL, InvocationPropertiesProvider... propertiesProvider) throws UnsupportedProtocolException;
 }

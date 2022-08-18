@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.TimeZone;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.logging.Handler;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,7 +36,6 @@ import com.jslib.converter.Converter;
 import com.jslib.converter.ConverterRegistry;
 import com.jslib.io.VariablesWriter;
 import com.jslib.lang.BugError;
-import com.jslib.lang.Handler;
 import com.jslib.lang.Pair;
 
 /**
@@ -1254,7 +1255,7 @@ public class Strings
    * @param handler match transformer.
    * @return new string with pattern replaced.
    */
-  public static String replaceAll(String source, Pattern pattern, Handler<String, String> handler)
+  public static String replaceAll(String source, Pattern pattern, Function<String, String> handler)
   {
     Matcher matcher = pattern.matcher(source);
     StringBuilder builder = new StringBuilder();
@@ -1262,11 +1263,11 @@ public class Strings
     while(matcher.find(start)) {
       builder.append(source.substring(start, matcher.start()));
       if(matcher.groupCount() == 0) {
-        builder.append(handler.handle(source.substring(matcher.start(), matcher.end())));
+        builder.append(handler.apply(source.substring(matcher.start(), matcher.end())));
       }
       else {
         for(int i = 0; i < matcher.groupCount(); ++i) {
-          builder.append(handler.handle(matcher.group(i + 1)));
+          builder.append(handler.apply(matcher.group(i + 1)));
         }
       }
       start = matcher.end();
@@ -1296,17 +1297,12 @@ public class Strings
    */
   public static String injectProperties(final String string) throws BugError
   {
-    return Strings.replaceAll(string, VARIABLE_PATTERN, new Handler<String, String>()
-    {
-      @Override
-      public String handle(String variableName)
-      {
-        String property = System.getProperty(variableName);
-        if(property == null) {
-          throw new BugError("Missing system property |%s|. String |%s| variable injection aborted.", variableName, string);
-        }
-        return property;
+    return Strings.replaceAll(string, VARIABLE_PATTERN, variableName -> {
+      String property = System.getProperty(variableName);
+      if(property == null) {
+        throw new BugError("Missing system property |%s|. String |%s| variable injection aborted.", variableName, string);
       }
+      return property;
     });
   }
 

@@ -21,7 +21,6 @@ import java.util.regex.Pattern;
 
 import org.junit.Test;
 
-import com.jslib.lang.Handler;
 import com.jslib.lang.Pair;
 
 public class StringsUnitTest
@@ -435,28 +434,14 @@ public class StringsUnitTest
   public void replaceAll()
   {
     Pattern pattern = Pattern.compile("i");
-    assertEquals("Th<em>i</em>s <em>i</em>s a text.", Strings.replaceAll("This is a text.", pattern, new Handler<String, String>()
-    {
-      @Override
-      public String handle(String match)
-      {
-        return "<em>" + match + "</em>";
-      }
-    }));
+    assertEquals("Th<em>i</em>s <em>i</em>s a text.", Strings.replaceAll("This is a text.", pattern, match -> "<em>" + match + "</em>"));
   }
 
   @Test
   public void replaceAllWithMultipleGroups()
   {
     Pattern pattern = Pattern.compile("(i)(s)");
-    assertEquals("Th<em>i</em><em>s</em> <em>i</em><em>s</em> a text.", Strings.replaceAll("This is a text.", pattern, new Handler<String, String>()
-    {
-      @Override
-      public String handle(String argument)
-      {
-        return "<em>" + argument + "</em>";
-      }
-    }));
+    assertEquals("Th<em>i</em><em>s</em> <em>i</em><em>s</em> a text.", Strings.replaceAll("This is a text.", pattern, argument -> "<em>" + argument + "</em>"));
   }
 
   @Test
