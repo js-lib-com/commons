@@ -65,10 +65,10 @@ import javax.security.auth.callback.Callback;
  * task.start();
  * </pre>
  * 
- * @param <Value> task returned value type.
+ * @param <T> task returned value type.
  * @author Iulian Rotaru
  */
-public abstract class AsyncTask<Value>
+public abstract class AsyncTask<T>
 {
   /**
    * Execute task logic and return a resulting value.
@@ -76,10 +76,10 @@ public abstract class AsyncTask<Value>
    * @return value resulting from task execution.
    * @throws Throwable any exception task logic may throw.
    */
-  abstract protected Value execute() throws Throwable;
+  abstract protected T execute() throws Throwable;
 
   /** Asynchronous task listener. */
-  protected Consumer<Value> callback;
+  protected Consumer<T> callback;
 
   /**
    * Constructor for tasks that may use {@link #onPostExecute(Object)} for returned value handling. See first usage
@@ -95,7 +95,7 @@ public abstract class AsyncTask<Value>
    * 
    * @param callback callback to be invoked on task completion.
    */
-  protected AsyncTask(Consumer<Value> callback)
+  protected AsyncTask(Consumer<T> callback)
   {
     this.callback = callback;
   }
@@ -110,7 +110,7 @@ public abstract class AsyncTask<Value>
       {
         try {
           onPreExecute();
-          Value value = execute();
+          T value = execute();
           onPostExecute(value);
         }
         catch(Throwable throwable) {
@@ -132,7 +132,7 @@ public abstract class AsyncTask<Value>
    * 
    * @param value value returned by task logic.
    */
-  protected void onPostExecute(Value value)
+  protected void onPostExecute(T value)
   {
     if(callback != null) {
       callback.accept(value);

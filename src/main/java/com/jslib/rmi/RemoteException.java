@@ -1,11 +1,13 @@
 package com.jslib.rmi;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.jslib.converter.Converter;
+import com.jslib.converter.ConverterRegistry;
+import com.jslib.util.Classes;
 import com.jslib.util.Strings;
 
 /**
@@ -15,20 +17,12 @@ import com.jslib.util.Strings;
  */
 public final class RemoteException
 {
-  private final String type;
+  private String exceptionClass;
+  private Value[] constructorArguments;
 
-  private final String message;
-
-  private final Map<String, Object> properties;
-
-  /** Remote exception message. */
-
-  /** Test constructor. */
   public RemoteException()
   {
-    this.type = null;
-    this.message = null;
-    this.properties = Collections.emptyMap();
+
   }
 
   /**
@@ -38,56 +32,82 @@ public final class RemoteException
    */
   public RemoteException(Throwable target)
   {
-    this.type = target.getClass().getCanonicalName();
-    this.message = target.getMessage();
+    this.exceptionClass = target.getClass().getCanonicalName();
 
-    Field[] fields = target.getClass().getDeclaredFields();
-    if(fields.length == 0) {
-      this.properties = Collections.emptyMap();
-      return;
-    }
+    List<Value> arguments = new ArrayList<>();
 
-    this.properties = new HashMap<>();
-    for(Field field : fields) {
-      field.setAccessible(true);
-      if(Modifier.isStatic(field.getModifiers())) {
+    for(Constructor<?> constructor : target.getClass().getConstructors()) {
+      ExceptionParameters annotation = constructor.getAnnotation(ExceptionParameters.class);
+      if(annotation == null) {
         continue;
       }
-      try {
-        this.properties.put(field.getName(), field.get(target));
+      String[] parameterNames = annotation.value().split(",\\s*");
+      for(int i = 0; i < parameterNames.length; ++i) {
+        String parameterName = parameterNames[i];
+        Field field = Classes.getOptionalField(target.getClass(), parameterName);
+        if(field == null) {
+          if(!constructor.getParameterTypes()[i].equals(String.class)) {
+            throw new IllegalStateException("Exception constructor parameter without bound field should be exception message string.");
+          }
+          arguments.add(new Value(target.getMessage()));
+          continue;
+        }
+        arguments.add(new Value(Classes.getFieldValue(target, field)));
       }
-      catch(IllegalArgumentException | IllegalAccessException e) {}
+      break;
     }
+
+    if(arguments.isEmpty() && target.getMessage() != null) {
+      try {
+        target.getClass().getConstructor(new Class<?>[]
+        {
+            String.class
+        });
+        arguments.add(new Value(target.getMessage()));
+      }
+      catch(NoSuchMethodException | SecurityException e) {}
+    }
+
+    this.constructorArguments = arguments.toArray(new Value[0]);
   }
 
-  /**
-   * Get the class of the exception that causes this remote exception.
-   * 
-   * @return exception cause class.
-   */
-  public String getType()
+  public Exception getCause()
   {
-    return type;
-  }
-
-  /**
-   * Get exception message.
-   * 
-   * @return exception message.
-   */
-  public String getMessage()
-  {
-    return message;
-  }
-
-  public Map<String, Object> getProperties()
-  {
-    return properties;
+    Object[] arguments = new Object[constructorArguments.length];
+    for(int i = 0; i < arguments.length; ++i) {
+      arguments[i] = constructorArguments[i].getValue();
+    }
+    return Classes.newInstance(exceptionClass, arguments);
   }
 
   @Override
   public String toString()
   {
-    return Strings.concat(type, ": ", message);
+    Exception cause = getCause();
+    return Strings.concat(cause.getClass().getCanonicalName(), ": ", cause.getMessage());
+  }
+
+  private static class Value
+  {
+    private static final Converter converter = ConverterRegistry.getConverter();
+
+    private String type;
+    private String value;
+
+    @SuppressWarnings("unused")
+    public Value()
+    {
+    }
+
+    public Value(Object value)
+    {
+      this.type = value != null ? value.getClass().getCanonicalName() : null;
+      this.value = converter.asString(value);
+    }
+
+    public Object getValue()
+    {
+      return type != null ? converter.asObject(value, Classes.forName(type)) : null;
+    }
   }
 }
