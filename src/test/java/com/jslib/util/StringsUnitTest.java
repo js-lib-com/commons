@@ -26,6 +26,14 @@ import com.jslib.lang.Pair;
 public class StringsUnitTest
 {
   @Test
+  public void getMethodAccessor() {
+    assertEquals("getTitle", Strings.getMethodAccessor("get", "title"));
+    assertEquals("getBuildDir", Strings.getMethodAccessor("get", "build-dir"));
+    assertEquals("getBuildDir", Strings.getMethodAccessor("get", "buildDir"));
+    assertEquals("getBuildDir", Strings.getMethodAccessor("get", "BuildDir"));
+  }
+  
+  @Test
   public void toTitleCase()
   {
     assertEquals("Iulian", Strings.toTitleCase("iulian"));
