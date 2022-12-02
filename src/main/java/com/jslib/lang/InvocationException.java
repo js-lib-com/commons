@@ -19,7 +19,7 @@ public class InvocationException extends RuntimeException
    */
   public InvocationException(InvocationTargetException e)
   {
-    super(e.getTargetException());
+    super(e.getTargetException() != null ? e.getTargetException() : e.getCause());
   }
 
   /**
