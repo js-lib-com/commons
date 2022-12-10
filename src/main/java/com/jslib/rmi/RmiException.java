@@ -18,7 +18,7 @@ public class RmiException extends RuntimeException
    * @param remoteMethodURL remote method URL,
    * @param remoteException exception root cause.
    */
-  public RmiException(URL remoteMethodURL, RemoteException remoteException)
+  public RmiException(URL remoteMethodURL, RemoteExceptionContext remoteException)
   {
     super(String.format("HTTP-RMI server execution error on |%s|: %s", remoteMethodURL.toExternalForm(), remoteException));
   }
@@ -29,7 +29,7 @@ public class RmiException extends RuntimeException
    * @param remoteMethodURL remote method URL,
    * @param remoteException exception root cause.
    */
-  public RmiException(String remoteMethodURL, RemoteException remoteException)
+  public RmiException(String remoteMethodURL, RemoteExceptionContext remoteException)
   {
     super(String.format("HTTP-RMI server execution error on |%s|: %s", remoteMethodURL, remoteException));
   }
