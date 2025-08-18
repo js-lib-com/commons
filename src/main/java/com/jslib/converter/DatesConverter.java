@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -88,16 +89,16 @@ final class DatesConverter implements Converter {
         }
         
         if (valueType == LocalDate.class) {
-          return (T) date.toInstant().atZone(ZoneId.of("UTC")).toLocalDate();
+          return (T) date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         }
         if (valueType == LocalTime.class) {
-          return (T) date.toInstant().atZone(ZoneId.of("UTC")).toLocalTime();
+          return (T) date.toInstant().atZone(ZoneId.systemDefault()).toLocalTime();
         }
         if (valueType == LocalDateTime.class) {
-          return (T) date.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime();
+          return (T) date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         }
         if (valueType == ZonedDateTime.class) {
-          return (T) ZonedDateTime.ofInstant(date.toInstant(), ZoneId.of("UTC"));
+          return (T) ZonedDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
         }
 
         if (valueType == java.sql.Date.class) {
@@ -116,10 +117,33 @@ final class DatesConverter implements Converter {
 	/** Return ISO8601 string representation for given date instance. */
 	@Override
 	public String asString(Object object) {
-		// at this point object is a Date
+		// at this point object should be a Date and subclasses, LocalDateTime, LocalDate or LocalTime
 
+	    Date date = null;
+	    if (object instanceof Date) {
+	      date = (Date)object;
+	    }
+	    else {
+	      Instant instant;
+	      if(object instanceof LocalDateTime) {
+	        instant = ((LocalDateTime) object).atZone(ZoneId.systemDefault()).toInstant();
+	      }
+	      else if(object instanceof LocalDate) {
+            instant = ((LocalDate)object).atStartOfDay(ZoneId.systemDefault()).toInstant();
+	      }
+	      else if(object instanceof LocalTime) {
+            LocalDate today = LocalDate.now();
+            LocalDateTime localDateTime = LocalDateTime.of(today, (LocalTime)object);
+            instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant();
+	      }
+	      else {
+	        throw new BugError("Unsupported date type |%s|.", object.getClass());
+	      }
+	      date = Date.from(instant);
+	    }
+	  
 		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
-		calendar.setTime((Date) object);
+		calendar.setTime(date);
 
 		StringBuilder builder = new StringBuilder();
 

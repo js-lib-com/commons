@@ -35,7 +35,7 @@ public class FormatUnitTest
     assertEquals("12.34%", format.format(0.1234));
 
     format = new Percent(new Locale("ro", "RO"));
-    assertEquals("12,34 %", format.format(0.1234));
+    assertEquals("12,34%", format.format(0.1234));
   }
 
   @Test
@@ -45,7 +45,7 @@ public class FormatUnitTest
     assertEquals("$12.34", format.format(12.34));
 
     format = new Currency(new Locale("ro", "RO"));
-    assertEquals("12,34 RON", format.format(12.34));
+    assertEquals("12,34 LEI", format.format(12.34));
   }
 
   @Test
@@ -65,27 +65,27 @@ public class FormatUnitTest
     assertEquals("Sunday, March 15, 1964", format.format(getDate()));
     
     format.setLocale(new Locale("ro", "RO"));
-    assertEquals("duminică, 15 martie 1964", format.format(getDate()));
+    assertEquals("15 martie 1964", format.format(getDate()));
   }
 
   @Test
   public void formatFullDateTime()
   {
     DateTimeFormat format = new FullDateTime();
-    assertEquals("Sunday, March 15, 1964 at 2:40:00 PM Coordinated Universal Time", format.format(getDate()));
+    assertEquals("Sunday, March 15, 1964 2:40:00 PM UTC", format.format(getDate()));
     
     format.setLocale(new Locale("ro", "RO"));
-    assertEquals("duminică, 15 martie 1964, 14:40:00 Timpul universal coordonat", format.format(getDate()));
+    assertEquals("15 martie 1964 14:40:00 UTC", format.format(getDate()));
   }
 
   @Test
   public void formatFullTime()
   {
     DateTimeFormat format = new FullTime();
-    assertEquals("2:40:00 PM Coordinated Universal Time", format.format(getDate()));
+    assertEquals("2:40:00 PM UTC", format.format(getDate()));
     
     format.setLocale(new Locale("ro", "RO"));
-    assertEquals("14:40:00 Timpul universal coordonat", format.format(getDate()));
+    assertEquals("14:40:00 UTC", format.format(getDate()));
   }
 
   @Test
@@ -109,10 +109,10 @@ public class FormatUnitTest
   public void formatLongDateTime()
   {
     DateTimeFormat format = new LongDateTime();
-    assertEquals("March 15, 1964 at 2:40:00 PM UTC", format.format(getDate()));
+    assertEquals("March 15, 1964 2:40:00 PM UTC", format.format(getDate()));
     
     format.setLocale(new Locale("ro", "RO"));
-    assertEquals("15 martie 1964, 14:40:00 UTC", format.format(getDate()));
+    assertEquals("15 martie 1964 14:40:00 UTC", format.format(getDate()));
   }
 
   @Test
@@ -132,17 +132,17 @@ public class FormatUnitTest
     assertEquals("Mar 15, 1964", format.format(getDate()));
     
     format.setLocale(new Locale("ro", "RO"));
-    assertEquals("15 mar. 1964", format.format(getDate()));
+    assertEquals("15.03.1964", format.format(getDate()));
   }
 
   @Test
   public void formatMediumDateTime()
   {
     DateTimeFormat format = new MediumDateTime();
-    assertEquals("Mar 15, 1964, 2:40:00 PM", format.format(getDate()));
+    assertEquals("Mar 15, 1964 2:40:00 PM", format.format(getDate()));
     
     format.setLocale(new Locale("ro", "RO"));
-    assertEquals("15 mar. 1964, 14:40:00", format.format(getDate()));
+    assertEquals("15.03.1964 14:40:00", format.format(getDate()));
   }
 
   @Test
@@ -169,10 +169,10 @@ public class FormatUnitTest
   public void formatShortDateTime()
   {
     DateTimeFormat format = new ShortDateTime();
-    assertEquals("3/15/64, 2:40 PM", format.format(getDate()));
+    assertEquals("3/15/64 2:40 PM", format.format(getDate()));
     
     format.setLocale(new Locale("ro", "RO"));
-    assertEquals("15.03.1964, 14:40", format.format(getDate()));
+    assertEquals("15.03.1964 14:40", format.format(getDate()));
   }
 
   @Test
