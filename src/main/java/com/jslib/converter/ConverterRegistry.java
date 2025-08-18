@@ -18,6 +18,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import com.jslib.lang.BugError;
 import com.jslib.lang.NoSuchBeingException;
@@ -70,6 +71,7 @@ import com.jslib.util.Types;
  * <li>{@link Class}
  * <li>{@link File}
  * <li>{@link URL}
+ * <li>{@link UUID}
  * <li>{@link Locale}
  * <li>{@link TimeZone}
  * <li>{@link Charset}
@@ -214,6 +216,7 @@ public final class ConverterRegistry implements Converter
     this.converters.put(File.class, new FileConverter());
     this.converters.put(URI.class, new UriConverter());
     this.converters.put(URL.class, new UrlConverter());
+    this.converters.put(UUID.class, new UuidConverter());
     this.converters.put(Locale.class, new LocaleConverter());
     this.converters.put(Charset.class, new CharsetConverter());
 
